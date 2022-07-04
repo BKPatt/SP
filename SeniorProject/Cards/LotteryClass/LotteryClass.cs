@@ -1,4 +1,4 @@
-﻿using ClassesManagerReborn;
+using ClassesManagerReborn;
 using System.Collections;
 
 namespace SeniorProject.Cards.LotteryClass
@@ -17,13 +17,13 @@ namespace SeniorProject.Cards.LotteryClass
             ClassesRegistry.Register(Lottery.Card, CardType.Entry);
             ClassesRegistry.Register(BetterOdds.Card, CardType.Card, Lottery.Card, 4);
             ClassesRegistry.Register(CashStrapped.Card, CardType.Card, Lottery.Card);
-            ClassesRegistry.Register(Chaos.Card, CardType.Card, Lottery.Card);
-            ClassesRegistry.Register(Fireworks.Card, CardType.Card, Lottery.Card, 5);
-            ClassesRegistry.Register(LittleChaos.Card, CardType.Card, Lottery.Card, 5);
+            ClassesRegistry.Register(Chaos.Card, CardType.Gate, Lottery.Card);
+            ClassesRegistry.Register(Fireworks.Card, CardType.Card, new CardInfo[] { Chaos.Card }, 5);
+            ClassesRegistry.Register(LittleChaos.Card, CardType.Card, new CardInfo[] { Chaos.Card }, 5);
             ClassesRegistry.Register(LittleTime.Card, CardType.Card, Lottery.Card);
-            ClassesRegistry.Register(MoreChaos.Card, CardType.Card, Lottery.Card, 2);
+            ClassesRegistry.Register(MoreChaos.Card, CardType.Card, new CardInfo[] { Chaos.Card }, 2);
             ClassesRegistry.Register(MoreTime.Card, CardType.Card, Lottery.Card, 2);
-            ClassesRegistry.Register(Pyrotechnics.Card, CardType.Card, Lottery.Card);
+            ClassesRegistry.Register(Pyrotechnics.Card, CardType.Card, new CardInfo[] { Chaos.Card });
         }
     }
 }
