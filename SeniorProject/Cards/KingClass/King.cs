@@ -1,9 +1,9 @@
-﻿using UnboundLib;
+using UnboundLib;
 using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;
 using SeniorProject.MonoBehaviours;
-using SeniorProject.Extensions;
+using Ported_FFC.Extensions;
 
 namespace SeniorProject.Cards.KingClass
 {
@@ -26,7 +26,8 @@ namespace SeniorProject.Cards.KingClass
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             // Prevents player from hurting themself with their own bounces
-            player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>();
+            characterStats.GetAdditionalData().JokesOnYou = true;
+            //player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>();
 
             // Add lottery and add to number of lottery cards
             player.gameObject.AddComponent<KingPointAndCard>();
@@ -43,6 +44,8 @@ namespace SeniorProject.Cards.KingClass
             gameObject.GetComponent<KingPointAndCard>().enableHealth = false;
             gameObject.GetComponent<KingPointAndCard>().enableDamage = false;
             GameObject.Destroy(player.gameObject.GetOrAddComponent<KingPointAndCard>());
+
+            characterStats.GetAdditionalData().JokesOnYou = false;
 
             // Debugging
             //UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} has been removed from player {player.playerID}.");
