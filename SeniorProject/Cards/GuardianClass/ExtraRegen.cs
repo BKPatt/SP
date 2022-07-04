@@ -1,4 +1,4 @@
-﻿using ClassesManagerReborn.Util;
+using ClassesManagerReborn.Util;
 using UnboundLib;
 using UnboundLib.Cards;
 using UnityEngine;
@@ -96,3 +96,4 @@ namespace SeniorProject.Cards.GuardianClass
         }
     }
 }
+
