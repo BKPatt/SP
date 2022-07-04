@@ -1,4 +1,4 @@
-﻿using ClassesManagerReborn.Util;
+using ClassesManagerReborn.Util;
 using System.Collections.Generic;
 using UnboundLib;
 using UnboundLib.Cards;
