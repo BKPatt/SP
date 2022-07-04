@@ -1,14 +1,7 @@
-﻿using ClassesManagerReborn.Util;
 using System.Collections.Generic;
-using UnboundLib;
-using UnboundLib.Cards;
 using UnityEngine;
-using SeniorProject.MonoBehaviours;
 using System.Linq;
-using ModdingUtils.MonoBehaviours;
-using System;
 using ModdingUtils.Utils;
-using Photon.Pun;
 
 namespace SeniorProject.MonoBehaviours
 {
@@ -52,7 +45,7 @@ namespace SeniorProject.MonoBehaviours
 
             if (health && rand == setHealth)
             {
-                statModifiers.health++;
+                player.data.maxHealth++;
             }
             if (lifeS && rand == setLst)
             {
@@ -64,6 +57,8 @@ namespace SeniorProject.MonoBehaviours
 
                 if (rand1 == 0)
                 {
+                    //UnityEngine.Debug.Log($"Hurt");
+
                     List<Player> otherPlayers = PlayerManager.instance.players.Where(player => PlayerStatus.PlayerAliveAndSimulated(player) && (player.playerID != this.player.playerID)).ToList();
 
                     int numPlayers = 0;
@@ -75,14 +70,24 @@ namespace SeniorProject.MonoBehaviours
 
                     int randomPlayer = random.Next(numPlayers);
 
-                    otherPlayers[randomPlayer].data.view.RPC("RPCA_Die", RpcTarget.All, new object[]
-                        {
-                            new Vector2(0, 1f)
-                        });
+                    otherPlayers[randomPlayer].data.healthHandler.CallTakeDamage((Vector2)otherPlayers[randomPlayer].data.healthHandler.transform.position - ((Vector2)(this.transform.position).normalized * (damage * otherPlayers[randomPlayer].data.health)), 
+                        (otherPlayers[randomPlayer].data.transform.position), 
+                        null, 
+                        otherPlayers[randomPlayer], 
+                        false);
+
+                    // Debugging
+                    /*UnityEngine.Debug.Log($"HH: { (Vector2)otherPlayers[randomPlayer].data.healthHandler.transform.position }");
+                    UnityEngine.Debug.Log($"Player Health: { otherPlayers[randomPlayer].data.health }");
+                    UnityEngine.Debug.Log($"Damage: { damage }");
+                    UnityEngine.Debug.Log($"Damage Total: { damage * otherPlayers[randomPlayer].data.health }");
+                    UnityEngine.Debug.Log($"Normalized: { ((Vector2)(this.transform.position).normalized) }");
+                    UnityEngine.Debug.Log($"Together: { ((Vector2)(this.transform.position).normalized * (damage * otherPlayers[randomPlayer].data.health)) }");*/
                 }
             }
         }
 
+        public float damage = 0.01f;
         public int setHealth;
         public int setLst;
         public int setBur;
