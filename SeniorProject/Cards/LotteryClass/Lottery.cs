@@ -1,4 +1,4 @@
-﻿using UnboundLib;
+using UnboundLib;
 using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;
@@ -18,14 +18,11 @@ namespace SeniorProject.Cards.LotteryClass
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers, Block block)
         {
             // Modifiers
-            statModifiers.movementSpeed *= 2.0f;
-            statModifiers.health *= 0.2f;
+            statModifiers.movementSpeed *= 1.35f;
+            statModifiers.health *= 0.4f;
             statModifiers.sizeMultiplier *= 0.75f;
-            block.cooldown = 0.15f;
-            statModifiers.gravity = 2.0f;
-            statModifiers.jump = 1.45f;
-            gun.reloadTimeAdd = 1.5f;
-            gun.attackSpeed = 0.5f;
+            statModifiers.gravity = 0.65f;
+            statModifiers.jump = 3;
 
             cardInfo.allowMultiple = false;
 
