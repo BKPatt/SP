@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using UnboundLib;
 using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;
 using SeniorProject.MonoBehaviours;
-using SeniorProject.Extensions;
+using Ported_FFC.Extensions;
 
 namespace SeniorProject.Cards.WrathClass
 {
@@ -45,7 +45,7 @@ namespace SeniorProject.Cards.WrathClass
             player.gameObject.GetComponent<WrathPointAndCard>().numCards++;
 
             //Add MonoBehaviours and Extensions
-            player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>();
+            characterStats.GetAdditionalData().JokesOnYou = true;
 
             // For debugging
             //UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} has been added to player {player.playerID}.");
@@ -54,7 +54,9 @@ namespace SeniorProject.Cards.WrathClass
         {
             //Removes monobehaviours on card removal
             GameObject.Destroy(player.gameObject.GetOrAddComponent<WrathPointAndCard>());
-            GameObject.Destroy(player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>());
+
+            characterStats.GetAdditionalData().JokesOnYou = false;
+            //GameObject.Destroy(player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>());
         }
 
         protected override string GetTitle()
