@@ -1,4 +1,4 @@
-﻿using UnboundLib;
+using UnboundLib;
 using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;
@@ -47,7 +47,7 @@ namespace SeniorProject.Cards.LotteryClass
         }
         protected override string GetDescription()
         {
-            return "Better odds of random player(s) exploding (if enabled by Chaos)";
+            return "Better odds of random player(s) exploding";
         }
         protected override GameObject GetCardArt()
         {
