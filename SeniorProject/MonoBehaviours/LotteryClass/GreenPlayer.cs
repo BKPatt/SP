@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
-using SeniorProject.Extensions;
 using System.Linq;
 using UnboundLib;
 using ModdingUtils.MonoBehaviours;
 using UnboundLib.Networking;
 using System.Reflection;
+using ModdingUtils.Utils;
 
 namespace SeniorProject.MonoBehaviours
 {
@@ -27,33 +27,31 @@ namespace SeniorProject.MonoBehaviours
             if (PlayerStatus.PlayerAliveAndSimulated(this.player))
             {
                 player.gameObject.GetOrAddComponent<GreenEffect>();
-                // get all alive players that are not this player
-                List<Player> otherPlayers = PlayerManager.instance.players.Where(player => PlayerStatus.PlayerAliveAndSimulated(player) && (player.playerID != this.player.playerID)).ToList();
 
-                Vector2 displacement;
+                List<Player> allOtherPlayers = PlayerManager.instance.players.Where(player => PlayerStatus.PlayerAliveAndSimulated(player) && (player.playerID != this.player.playerID)).ToList();
 
-                foreach (Player otherPlayer in otherPlayers)
+                Vector2 displace;
+
+                foreach (Player otherPlayers in allOtherPlayers)
                 {
-                    displacement = otherPlayer.transform.position - this.player.transform.position;
-                    if (displacement.magnitude <= this.range)
+                    displace = otherPlayers.transform.position - this.player.transform.position;
+                    if (displace.magnitude <= this.range)
                     {
-                        // if the other player is within range, then add the Green effect to them
-
-                        // locally
                         if (PhotonNetwork.OfflineMode)
                         {
-                            otherPlayer.gameObject.GetOrAddComponent<GreenEffect>();
+                            otherPlayers.gameObject.GetOrAddComponent<GreenEffect>();
                         }
-                        // via network
                         else if (this.player.GetComponent<PhotonView>().IsMine)
                         {
-                            NetworkingManager.RPC(typeof(GreenPlayer), "RPCA_TurnGreen", new object[] { otherPlayer.data.view.ControllerActorNr });
+                            NetworkingManager.RPC(typeof(GreenPlayer), "RPCA_TurnGreen", new object[] { otherPlayers.data.view.ControllerActorNr });
                         }
                     }
 
                 }
             }
         }
+
+
 
         [UnboundRPC]
         private static void RPCA_TurnGreen(int actorID)
@@ -68,8 +66,7 @@ namespace SeniorProject.MonoBehaviours
 
     
 
-    // Separate class for bookkeeping
-    public class GreenEffect : ReversibleEffect //this is a separate effect just for bookkeeping which players are Green
+    public class GreenEffect : ReversibleEffect
     {
         private readonly float movementSpeedReduction = 0.5f;
         private readonly float jumpReduction = 0.25f;
