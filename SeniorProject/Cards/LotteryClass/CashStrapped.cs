@@ -1,4 +1,4 @@
-﻿using UnboundLib;
+using UnboundLib;
 using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;
@@ -66,6 +66,13 @@ namespace SeniorProject.Cards.LotteryClass
                     positive = true,
                     stat = "Give your money away",
                     amount = "True",
+                    simepleAmount = CardInfoStat.SimpleAmount.notAssigned
+                },
+                new CardInfoStat()
+                {
+                    positive = false,
+                    stat = "Money",
+                    amount = "Too Much",
                     simepleAmount = CardInfoStat.SimpleAmount.notAssigned
                 }
             };
