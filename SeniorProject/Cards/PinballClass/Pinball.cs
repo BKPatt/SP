@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using UnboundLib;
 using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;
 using SeniorProject.MonoBehaviours;
-using SeniorProject.Extensions;
+using Ported_FFC.Extensions;
 
 namespace SeniorProject.Cards.PinballClass
 {
@@ -46,7 +46,8 @@ namespace SeniorProject.Cards.PinballClass
             player.transform.gameObject.GetComponent<PinballPointAndCard>().numCards++;
 
             //Add MonoBehaviours and Extensions
-            player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>();
+            characterStats.GetAdditionalData().JokesOnYou = true;
+            //player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>();
 
             // For debugging
             //UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} has been added to player {player.playerID}.");
@@ -55,7 +56,9 @@ namespace SeniorProject.Cards.PinballClass
         {
             //Removes monobehaviours on card removal
             GameObject.Destroy(player.gameObject.GetOrAddComponent<PinballPointAndCard>());
-            GameObject.Destroy(player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>());
+
+            characterStats.GetAdditionalData().JokesOnYou = false;
+            //GameObject.Destroy(player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>());
         }
 
         protected override string GetTitle()
