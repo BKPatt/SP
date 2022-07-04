@@ -1,4 +1,4 @@
-﻿using ClassesManagerReborn.Util;
+using ClassesManagerReborn.Util;
 using System.Collections.Generic;
 using UnboundLib;
 using UnboundLib.Cards;
@@ -29,6 +29,8 @@ namespace SeniorProject.Cards.WrathClass
 
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
+            block.forceToAddUp += 5.0f;
+
             // Sets new stats for Pinball class
             player.gameObject.GetComponent<WrathPointAndCard>().numCards++;
             player.gameObject.GetComponent<BlockActionMono>().blowUpR = true;
@@ -74,6 +76,13 @@ namespace SeniorProject.Cards.WrathClass
                     positive = true,
                     stat = "Lifesteal",
                     amount = "(25%) +0.5",
+                    simepleAmount = CardInfoStat.SimpleAmount.notAssigned
+                },
+                new CardInfoStat()
+                {
+                    positive = false,
+                    stat = "Block Force Up",
+                    amount = "+5",
                     simepleAmount = CardInfoStat.SimpleAmount.notAssigned
                 },
             };
