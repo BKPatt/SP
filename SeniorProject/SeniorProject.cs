@@ -26,7 +26,7 @@ namespace SeniorProject
     {
         private const string ModId = "com.bkpatt.rounds.SeniorProject";
         private const string ModName = "SeniorProject";
-        public const string Version = "0.0.0"; // What version are we on (major.minor.patch)?
+        public const string Version = "0.0.2"; // What version are we on (major.minor.patch)?
         public const string ModInitials = "SP";
 
         public static SeniorProject instance { get; private set; }
