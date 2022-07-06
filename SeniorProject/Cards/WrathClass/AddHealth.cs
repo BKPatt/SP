@@ -64,7 +64,7 @@ namespace SeniorProject.Cards.WrathClass
 
         protected override string GetDescription()
         {
-            return "A chance to add a small amount of health on each block.";
+            return "Add a small amount of health on each block.";
         }
 
         protected override CardInfoStat[] GetStats()
@@ -74,8 +74,8 @@ namespace SeniorProject.Cards.WrathClass
                 new CardInfoStat()
                 {
                     positive = true,
-                    stat = "Health Per Block",
-                    amount = "(25%) +1",
+                    stat = "Health",
+                    amount = "+1 Per Block",
                     simepleAmount = CardInfoStat.SimpleAmount.notAssigned
                 },
                 new CardInfoStat()
