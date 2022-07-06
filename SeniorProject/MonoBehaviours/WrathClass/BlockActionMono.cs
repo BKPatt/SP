@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using ModdingUtils.Utils;
+using Photon.Pun;
 
 namespace SeniorProject.MonoBehaviours
 {
@@ -11,9 +12,11 @@ namespace SeniorProject.MonoBehaviours
 
         private Block block;
         private Player player;
-        private CharacterStatModifiers statModifiers;
+        private Gun gun;
 
         private int rand;
+        private int rand1;
+        private int randomPlayer;
 
         public bool health = false;
         public bool lifeS = false;
@@ -27,6 +30,7 @@ namespace SeniorProject.MonoBehaviours
             // Gets block data
             player = this.gameObject.GetComponentInParent<Player>();
             block = this.gameObject.GetComponentInParent<Block>();
+            gun = this.player.GetComponent<Holding>().holdable.GetComponent<Gun>();
         }
 
         public void Start()
@@ -41,53 +45,105 @@ namespace SeniorProject.MonoBehaviours
 
         private void runBlock()
         {
-            rand = random.Next(numSub);
+            if (PhotonNetwork.OfflineMode)
+            { 
+                rand = random.Next(numSub);
 
-            if (health && rand == setHealth)
-            {
-                player.data.maxHealth++;
-            }
-            if (lifeS && rand == setLst)
-            {
-                statModifiers.lifeSteal += 0.5f;
-            }
-            if (blowUpR && rand == setBur)
-            {
-                int rand1 = random.Next(chanceEx);
-
-                if (rand1 == 0)
+                if (health && rand == setHealth)
                 {
-                    //UnityEngine.Debug.Log($"Hurt");
+                    player.data.maxHealth++;
+                }
+                if (lifeS && rand == setLst)
+                {
+                    gun.damage += 1;
+                }
+                if (blowUpR && rand == setBur)
+                {
+                    rand1 = random.Next(chanceEx);
 
-                    List<Player> otherPlayers = PlayerManager.instance.players.Where(player => PlayerStatus.PlayerAliveAndSimulated(player) && (player.playerID != this.player.playerID)).ToList();
-
-                    int numPlayers = 0;
-
-                    foreach (Player otherPlayer in otherPlayers)
+                    if (rand1 == 0)
                     {
-                        numPlayers++;
+                        //UnityEngine.Debug.Log($"Hurt");
+
+                        int numPlayers = 0;
+
+                        List<Player> otherPlayers = PlayerManager.instance.players.Where(player => PlayerStatus.PlayerAliveAndSimulated(player) && (player.playerID != this.player.playerID)).ToList();
+
+                        foreach (Player otherPlayer in otherPlayers)
+                        {
+                            numPlayers++;
+                        }
+
+                        randomPlayer = random.Next(numPlayers);
+
+                        otherPlayers[randomPlayer].data.healthHandler.CallTakeDamage(
+                            (Vector2)otherPlayers[randomPlayer].data.healthHandler.transform.position - ((Vector2)((this.transform.position).normalized * (damage * otherPlayers[randomPlayer].data.maxHealth))),
+                            (otherPlayers[randomPlayer].data.transform.position),
+                            null,
+                            otherPlayers[randomPlayer],
+                            false);
+
+                        // Debugging
+                        /*UnityEngine.Debug.Log($"HH: { (Vector2)otherPlayers[randomPlayer].data.healthHandler.transform.position }");
+                        UnityEngine.Debug.Log($"Player Health: { otherPlayers[randomPlayer].data.health }");
+                        UnityEngine.Debug.Log($"Damage: { damage }");
+                        UnityEngine.Debug.Log($"Damage Total: { damage * otherPlayers[randomPlayer].data.health }");
+                        UnityEngine.Debug.Log($"Normalized: { ((Vector2)(this.transform.position).normalized) }");
+                        UnityEngine.Debug.Log($"Together: { ((Vector2)(this.transform.position).normalized * (damage * otherPlayers[randomPlayer].data.health)) }");*/
                     }
+                }
+            }
+            else if (this.player.GetComponent<PhotonView>().IsMine)
+            {
+                int numPlayers = 0;
 
-                    int randomPlayer = random.Next(numPlayers);
+                List<Player> otherPlayers = PlayerManager.instance.players.Where(player => PlayerStatus.PlayerAliveAndSimulated(player) && (player.playerID != this.player.playerID)).ToList();
 
-                    otherPlayers[randomPlayer].data.healthHandler.CallTakeDamage((Vector2)otherPlayers[randomPlayer].data.healthHandler.transform.position - ((Vector2)(this.transform.position).normalized * (damage * otherPlayers[randomPlayer].data.health)), 
-                        (otherPlayers[randomPlayer].data.transform.position), 
-                        null, 
-                        otherPlayers[randomPlayer], 
-                        false);
+                foreach (Player otherPlayer in otherPlayers)
+                {
+                    numPlayers++;
+                }
 
-                    // Debugging
-                    /*UnityEngine.Debug.Log($"HH: { (Vector2)otherPlayers[randomPlayer].data.healthHandler.transform.position }");
-                    UnityEngine.Debug.Log($"Player Health: { otherPlayers[randomPlayer].data.health }");
-                    UnityEngine.Debug.Log($"Damage: { damage }");
-                    UnityEngine.Debug.Log($"Damage Total: { damage * otherPlayers[randomPlayer].data.health }");
-                    UnityEngine.Debug.Log($"Normalized: { ((Vector2)(this.transform.position).normalized) }");
-                    UnityEngine.Debug.Log($"Together: { ((Vector2)(this.transform.position).normalized * (damage * otherPlayers[randomPlayer].data.health)) }");*/
+                this.gameObject.GetComponent<PhotonView>().RPC("RPCA_Random", RpcTarget.All, new object[]
+                {
+                    random.Next(numSub),
+                    random.Next(chanceEx),
+                    random.Next(numPlayers)
+                });
+
+                if (blowUpR && rand == setBur)
+                {
+                    if (rand1 == 0)
+                    {
+                        otherPlayers[randomPlayer].data.healthHandler.CallTakeDamage(
+                                (Vector2)(otherPlayers[randomPlayer].data.healthHandler.transform.position) - ((Vector2)((this.transform.position).normalized * (damage * otherPlayers[randomPlayer].data.maxHealth))),
+                                (otherPlayers[randomPlayer].data.transform.position),
+                                null,
+                                otherPlayers[randomPlayer],
+                                false);
+                    }
                 }
             }
         }
 
-        public float damage = 0.01f;
+        [PunRPC]
+        private void RPCA_Random(int srand1, int srand2, int srand3)
+        {
+            rand = srand1;
+            rand1 = srand2;
+            randomPlayer = srand3;
+
+            if (health && srand1 == setHealth)
+            {
+                player.data.maxHealth++;
+            }
+            if (lifeS && srand1 == setLst)
+            {
+                gun.damage += 1;
+            }
+        }
+
+        public float damage = 0.05f;
         public int setHealth;
         public int setLst;
         public int setBur;
