@@ -64,7 +64,7 @@ namespace SeniorProject.Cards.WrathClass
 
         protected override string GetDescription()
         {
-            return "Small chance to hurt a random player every time you block.";
+            return "Small chance to hurt a random player every time you block (will not deal final blow).";
         }
 
         protected override CardInfoStat[] GetStats()
@@ -74,7 +74,7 @@ namespace SeniorProject.Cards.WrathClass
                 new CardInfoStat()
                 {
                     positive = true,
-                    stat = "Hurt player",
+                    stat = "10% Chance To Hurt player",
                     amount = "On Block",
                     simepleAmount = CardInfoStat.SimpleAmount.notAssigned
                 },
