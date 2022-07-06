@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnboundLib.GameModes;
 using System.Collections;
+using Photon.Pun;
 
 namespace SeniorProject.MonoBehaviours
 {
@@ -32,8 +33,6 @@ namespace SeniorProject.MonoBehaviours
         private int rand6; //seconds to take damage over
         private double rand7; //attack speed
         private int rand8; //bounces
-        //private double rand9; //spread
-        //private double rand10; //even spread
         private int rand11; //number of projectiles
         private int rand12; //amount of ammo
         private int rand13; //damage
@@ -82,57 +81,6 @@ namespace SeniorProject.MonoBehaviours
         {
             // Calls on random stats to be generated
             setRandom();
-
-            // Sets stats for each enable random stat
-            if (enableSpeed)
-            {
-                statModifiers.movementSpeed += (float)(rand1);
-            }
-            if (enableHealth)
-            {
-                player.data.maxHealth += rand5;
-            }
-            if (enableJump)
-            {
-                statModifiers.numberOfJumps += rand4;
-            }
-            if (enableGrav)
-            {
-                statModifiers.gravity += (float)(rand2 + rand3);
-            }
-            if (enableDamageOver)
-            {
-                statModifiers.secondsToTakeDamageOver += rand6;
-            }
-            if (enableAtSpeed)
-            {
-                player.data.stats.attackSpeedMultiplier *= (float)rand7;
-            }
-            if (enableBounce)
-            {
-                gun.reflects += rand8;
-            }
-            if (enableProj)
-            {
-                gun.numberOfProjectiles += rand11;
-            }
-            if (enableAmmo)
-            {
-                gun.ammo += rand12;
-            }
-            if (enableDamage)
-            {
-                gun.damage = (float)(rand13_1 + rand13);
-                gun.projectileSize *= 0.9f;
-            }
-            if (enableKnockback)
-            {
-                gun.knockback += rand14;
-            }
-            if (enableRelTime)
-            {
-                gun.reloadTime += (float)(rand15 + rand16);
-            }
         }
 
         // Sets stats back to original when battle ends
@@ -162,7 +110,6 @@ namespace SeniorProject.MonoBehaviours
             if (enableAtSpeed)
             {
                 player.data.stats.attackSpeedMultiplier /= (float)rand7;
-                //gun.attackSpeed -= (float)(rand7);
             }
             if (enableBounce)
             {
@@ -178,7 +125,6 @@ namespace SeniorProject.MonoBehaviours
             }
             if (enableDamage)
             {
-                //gun.damage = rand13;
                 gun.damage -= (float)(rand13_1+rand13);
             }
             if (enableKnockback)
@@ -196,24 +142,171 @@ namespace SeniorProject.MonoBehaviours
             // Gets rounds that player has won to edit some random stats
             int point = GameModeManager.CurrentHandler.GetTeamScore(player.teamID).points;
 
-            // Sets initial random numbers
-            rand1 = random.Next(mSpeed); //movement speed
-            rand2 = random.NextDouble(); //gravity
-            rand3 = random.Next(grav); //gravity
-            rand4 = random.Next(jump); //jump
-            rand5 = random.Next(health * (point + numCards)); //health
-            rand6 = random.Next(sDamageOver); //seconds to take damage over
-            rand7 = random.NextDouble(); //attack speed
-            rand8 = random.Next(bounce); //bounces
-            //rand9 = random.NextDouble(); //spread
-            //rand10 = random.NextDouble(); //even spread
-            rand11 = random.Next(numProj); //number of projectiles
-            rand12 = random.Next(ammo + (point + numCards)); //amount of ammo
-            rand13 = random.Next(damage); //damage
-            rand13_1 = random.NextDouble();
-            rand14 = random.Next(knockback); //knockback
-            rand15 = random.NextDouble(); //reload time
-            rand16 = random.Next(reloadTime); //reload time
+            if (PhotonNetwork.OfflineMode)
+            {
+                // Sets initial random numbers
+                rand1 = random.Next(mSpeed); //movement speed
+                rand2 = random.NextDouble(); //gravity
+                rand3 = random.Next(grav); //gravity
+                rand4 = random.Next(jump); //jump
+                rand5 = random.Next(health * (point + numCards)); //health
+                rand6 = random.Next(sDamageOver); //seconds to take damage over
+                rand7 = random.NextDouble(); //attack speed
+                rand8 = random.Next(bounce); //bounces
+                rand11 = random.Next(numProj); //number of projectiles
+                rand12 = random.Next(ammo + (point + numCards)); //amount of ammo
+                rand13 = random.Next(damage); //damage
+                rand13_1 = random.NextDouble();
+                rand14 = random.Next(knockback); //knockback
+                rand15 = random.NextDouble(); //reload time
+                rand16 = random.Next(reloadTime); //reload time
+
+                // Sets stats for each enable random stat
+                if (enableSpeed)
+                {
+                    statModifiers.movementSpeed += (float)(rand1);
+                }
+                if (enableHealth)
+                {
+                    player.data.maxHealth += rand5;
+                }
+                if (enableJump)
+                {
+                    statModifiers.numberOfJumps += rand4;
+                }
+                if (enableGrav)
+                {
+                    statModifiers.gravity += (float)(rand2 + rand3);
+                }
+                if (enableDamageOver)
+                {
+                    statModifiers.secondsToTakeDamageOver += rand6;
+                }
+                if (enableAtSpeed)
+                {
+                    player.data.stats.attackSpeedMultiplier *= (float)rand7;
+                }
+                if (enableBounce)
+                {
+                    gun.reflects += rand8;
+                }
+                if (enableProj)
+                {
+                    gun.numberOfProjectiles += rand11;
+                }
+                if (enableAmmo)
+                {
+                    gun.ammo += rand12;
+                }
+                if (enableDamage)
+                {
+                    gun.damage = (float)(rand13_1 + rand13);
+                    gun.projectileSize *= 0.9f;
+                }
+                if (enableKnockback)
+                {
+                    gun.knockback += rand14;
+                }
+                if (enableRelTime)
+                {
+                    gun.reloadTime += (float)(rand15 + rand16);
+                }
+            }
+            //Via Network
+            else if (this.player.GetComponent<PhotonView>().IsMine)
+            {
+                this.gameObject.GetComponent<PhotonView>().RPC("RPCA_RandomStats", RpcTarget.All, new object[]
+                {
+                    random.Next(mSpeed), //movement speed
+                    random.NextDouble(), //gravity
+                    random.Next(grav), //gravity
+                    random.Next(jump), //jump
+                    random.Next(health * (point + numCards)), //health
+                    random.Next(sDamageOver), //seconds to take damage over
+                    random.NextDouble(), //attack speed
+                    random.Next(bounce), //bounces
+                    random.Next(numProj), //number of projectiles
+                    random.Next(ammo + (point + numCards)), //amount of ammo
+                    random.Next(damage), //damage
+                    random.NextDouble(),
+                    random.Next(knockback), //knockback
+                    random.NextDouble(), //reload time
+                    random.Next(reloadTime) //reload time
+                });
+            }
+        }
+
+        [PunRPC]
+        private void RPCA_RandomStats(int srand1, double srand2, int srand3, int srand4, int srand5, int srand6, double srand7, int srand8, int srand11, int srand12, int srand13, double srand13_1, int srand14, double srand15, int srand16)
+        {
+            UnityEngine.Debug.Log($"Rand RPCA");
+
+            rand1 = srand1;
+            rand2 = srand2;
+            rand3 = srand3;
+            rand4 = srand4;
+            rand5 = srand5;
+            rand6 = srand6;
+            rand7 = srand7;
+            rand8 = srand8;
+            rand11 = srand11;
+            rand12 = srand12;
+            rand13 = srand13;
+            rand13_1 = srand13_1;
+            rand14 = srand14;
+            rand15 = srand15;
+            rand16 = srand16;
+
+            // Sets stats for each enable random stat
+            if (enableSpeed)
+            {
+                statModifiers.movementSpeed += (float)(srand1);
+            }
+            if (enableHealth)
+            {
+                player.data.maxHealth += srand5;
+            }
+            if (enableJump)
+            {
+                statModifiers.numberOfJumps += srand4;
+            }
+            if (enableGrav)
+            {
+                statModifiers.gravity += (float)(srand2 + srand3);
+            }
+            if (enableDamageOver)
+            {
+                statModifiers.secondsToTakeDamageOver += srand6;
+            }
+            if (enableAtSpeed)
+            {
+                player.data.stats.attackSpeedMultiplier *= (float)srand7;
+            }
+            if (enableBounce)
+            {
+                gun.reflects += srand8;
+            }
+            if (enableProj)
+            {
+                gun.numberOfProjectiles += srand11;
+            }
+            if (enableAmmo)
+            {
+                gun.ammo += srand12;
+            }
+            if (enableDamage)
+            {
+                gun.damage = (float)(srand13_1 + srand13);
+                gun.projectileSize *= 0.9f;
+            }
+            if (enableKnockback)
+            {
+                gun.knockback += srand14;
+            }
+            if (enableRelTime)
+            {
+                gun.reloadTime += (float)(srand15 + srand16);
+            }
         }
 
         // Referenced whenever card pick ends
