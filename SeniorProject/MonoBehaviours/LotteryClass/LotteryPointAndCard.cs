@@ -24,8 +24,11 @@ namespace SeniorProject.MonoBehaviours
         private int stored_point;
         private int stored_cards;
 
+        private System.Random random = new System.Random();
+
         private int num = 1;
         private int which;
+        private int randomPlayer;
 
         private int bus;
         private int bur;
@@ -66,54 +69,145 @@ namespace SeniorProject.MonoBehaviours
 
         public void Update()
         {
-            System.Random rand = new System.Random();
-
             if (num == 1)
             {
-                which = rand.Next(3);
+                which = random.Next(3);
 
                 num = 0;
             }
 
-            if (PlayerStatus.PlayerAliveAndSimulated(player))
+            currentTime = DateTime.Now;
+
+            if (PhotonNetwork.OfflineMode)
             {
-                currentTime = DateTime.Now;
-
-                // Possible death after x time
-                if (currentTime > endKs && start == 1)
+                if (PlayerStatus.PlayerAliveAndSimulated(player))
                 {
-                    bus = rand.Next(blowUpS);
-
-                    if (bus == 0)
+                    // Possible death after x time
+                    if (currentTime > endKs && start == 1)
                     {
-                        killSelf();
+                        bus = random.Next(blowUpS);
+
+                        if (bus == 0)
+                        {
+                            killSelf();
+                        }
+
+                        setKsTimer();
+                    }
+                    // One of three conditions (likely win)
+                    if (currentTime > endElse && enableR == 1 && start == 1)
+                    {
+                        bur = random.Next(blowUpR);
+
+                        // Kill random player
+                        if (which == 0 && bur == 0)
+                        {
+                            List<Player> otherPlayers = PlayerManager.instance.players.Where(player => PlayerStatus.PlayerAliveAndSimulated(player) && (player.playerID != this.player.playerID)).ToList();
+
+                            int numPlayers = 0;
+
+                            foreach (Player otherPlayer in otherPlayers)
+                            {
+                                numPlayers++;
+                            }
+
+                            otherPlayers[randomPlayer].data.view.RPC("RPCA_Die", RpcTarget.All, new object[]
+                                {
+                                    new Vector2(0, 1f)
+                                });
+                        }
+                        // Kill all but self
+                        else if (which == 1)
+                        {
+                            killAbs();
+                        }
+                        // Kill all (random winner)
+                        else if (which == 2)
+                        {
+                            killAll();
+                        }
+
+                        setOtherTimer();
+                    }
+                }
+            }
+            else if (this.player.GetComponent<PhotonView>().IsMine)
+            {
+                if (PlayerStatus.PlayerAliveAndSimulated(player))
+                {
+                    List<Player> otherPlayers = PlayerManager.instance.players.Where(player => PlayerStatus.PlayerAliveAndSimulated(player) && (player.playerID != this.player.playerID)).ToList();
+
+                    int numPlayers = 0;
+
+                    foreach (Player otherPlayer in otherPlayers)
+                    {
+                        numPlayers++;
                     }
 
-                    setKsTimer();
-                }
-                // One of three conditions (likely win)
-                if (currentTime > endElse && enableR == 1 && start == 1)
-                {
-                    bur = rand.Next(blowUpR);
+                    this.gameObject.GetComponent<PhotonView>().RPC("RPCA_Chance", RpcTarget.All, new object[]
+                    {
+                        which,
+                        random.Next(blowUpS),
+                        random.Next(blowUpR),
+                        random.Next(numPlayers)
+                    });
 
                     // Kill random player
-                    if (which == 0 && bur == 0)
+                    if (currentTime > endElse && enableR == 1 && start == 1)
                     {
-                        killRand();
+                        if (which == 0 && bur == 0)
+                        {
+                            otherPlayers[randomPlayer].data.view.RPC("RPCA_Die", RpcTarget.All, new object[]
+                                {
+                                    new Vector2(0, 1f)
+                                });
+                        }
                     }
-                    // Kill all but self
-                    else if (which == 1)
-                    {
-                        killAbs();
-                    }
-                    // Kill all (random winner)
-                    else if (which == 2)
-                    {
-                        killAll();
-                    }
-
-                    setOtherTimer();
                 }
+            }
+        }
+
+        [PunRPC]
+        private void RPCA_Chance(int srand1, int srand2, int srand3, int srand4)
+        {
+            which = srand1;
+            bus = srand2;
+            bur = srand3;
+            randomPlayer = srand4;
+
+            if (num == 1)
+            {
+                num = 0;
+            }
+
+
+            currentTime = DateTime.Now;
+
+            // Possible death after x time
+            if (currentTime > endKs && start == 1)
+            {
+                if (srand2 == 0)
+                {
+                    killSelf();
+                }
+
+                setKsTimer();
+            }
+            // One of three conditions (likely win)
+            if (currentTime > endElse && enableR == 1 && start == 1)
+            {
+                // Kill all but self
+                if (srand1 == 1)
+                {
+                    killAbs();
+                }
+                // Kill all (random winner)
+                else if (srand1 == 2)
+                {
+                    killAll();
+                }
+
+                setOtherTimer();
             }
         }
 
@@ -123,27 +217,6 @@ namespace SeniorProject.MonoBehaviours
                     {
                         new Vector2(0, 1f)
                     });
-        }
-
-        private void killRand()
-        {
-            List<Player> otherPlayers = PlayerManager.instance.players.Where(player => PlayerStatus.PlayerAliveAndSimulated(player) && (player.playerID != this.player.playerID)).ToList();
-
-            System.Random rand = new System.Random();
-
-            int numPlayers = 0;
-
-            foreach (Player otherPlayer in otherPlayers)
-            {
-                numPlayers++;
-            }
-
-            int randomPlayer = rand.Next(numPlayers);
-
-            otherPlayers[randomPlayer].data.view.RPC("RPCA_Die", RpcTarget.All, new object[]
-                {
-                        new Vector2(0, 1f)
-                });
         }
 
         private void killAbs()
