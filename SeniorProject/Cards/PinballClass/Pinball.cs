@@ -5,7 +5,7 @@ using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;
 using SeniorProject.MonoBehaviours;
-using Ported_FFC.Extensions;
+using EasierExtension;
 
 namespace SeniorProject.Cards.PinballClass
 {
@@ -42,11 +42,12 @@ namespace SeniorProject.Cards.PinballClass
             statModifiers.automaticReload = false;
 
             // Number of cards of this class a player has
+            player.gameObject.GetOrAddComponent<JokesOnYou>();
             player.gameObject.AddComponent<PinballPointAndCard>();
             player.transform.gameObject.GetComponent<PinballPointAndCard>().numCards++;
 
             //Add MonoBehaviours and Extensions
-            characterStats.GetAdditionalData().JokesOnYou = true;
+            //characterStats.GetAdditionalData().JokesOnYou = true;
             //player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>();
 
             // For debugging
@@ -56,8 +57,9 @@ namespace SeniorProject.Cards.PinballClass
         {
             //Removes monobehaviours on card removal
             GameObject.Destroy(player.gameObject.GetOrAddComponent<PinballPointAndCard>());
+            GameObject.Destroy(player.gameObject.GetOrAddComponent<JokesOnYou>());
 
-            characterStats.GetAdditionalData().JokesOnYou = false;
+            //characterStats.GetAdditionalData().JokesOnYou = false;
             //GameObject.Destroy(player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>());
         }
 
