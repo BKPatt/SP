@@ -3,7 +3,7 @@ using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;
 using SeniorProject.MonoBehaviours;
-using Ported_FFC.Extensions;
+using EasierExtension;
 
 namespace SeniorProject.Cards.KingClass
 {
@@ -26,10 +26,11 @@ namespace SeniorProject.Cards.KingClass
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             // Prevents player from hurting themself with their own bounces
-            characterStats.GetAdditionalData().JokesOnYou = true;
+            //characterStats.GetAdditionalData().JokesOnYou = true;
             //player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>();
 
             // Add lottery and add to number of lottery cards
+            player.gameObject.GetOrAddComponent<JokesOnYou>();
             player.gameObject.AddComponent<KingPointAndCard>();
             player.gameObject.GetComponent<KingPointAndCard>().numCards++;
             player.gameObject.GetComponent<KingPointAndCard>().enableHealth = true;
@@ -40,12 +41,14 @@ namespace SeniorProject.Cards.KingClass
         }
         public override void OnRemoveCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
+            GameObject.Destroy(player.gameObject.GetOrAddComponent<JokesOnYou>());
+
             gameObject.GetComponent<KingPointAndCard>().numCards--;
             gameObject.GetComponent<KingPointAndCard>().enableHealth = false;
             gameObject.GetComponent<KingPointAndCard>().enableDamage = false;
             GameObject.Destroy(player.gameObject.GetOrAddComponent<KingPointAndCard>());
 
-            characterStats.GetAdditionalData().JokesOnYou = false;
+            //characterStats.GetAdditionalData().JokesOnYou = false;
 
             // Debugging
             //UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} has been removed from player {player.playerID}.");
