@@ -3,12 +3,15 @@ using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;
 using SeniorProject.MonoBehaviours;
+using SeniorProject;
 
 namespace SeniorProject.Cards.LotteryClass
 {
     class Lottery : CustomCard
     {
         public static CardInfo Card = null;
+
+        private bool debug_l = false;
 
         public override void Callback()
         {
@@ -27,24 +30,34 @@ namespace SeniorProject.Cards.LotteryClass
             cardInfo.allowMultiple = false;
 
             // Debugging
-            //UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} has been setup.");
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Built");
+            }
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            // Add lottery and add to number of lottery cards
+            // Mono(s) and adjustments
             player.gameObject.AddComponent<LotteryPointAndCard>();
             player.gameObject.GetComponent<LotteryPointAndCard>().numCards++;
 
             // Debugging
-            //UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} has been added to player {player.playerID}.");
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Added to Player {player.playerID}");
+            }
         }
         public override void OnRemoveCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
+            // Remove Mono(s) and adjustments
             gameObject.GetComponent<LotteryPointAndCard>().numCards--;
             GameObject.Destroy(player.gameObject.GetOrAddComponent<LotteryPointAndCard>());
 
             // Debugging
-            //UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} has been removed from player {player.playerID}.");
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Removed from Player {player.playerID}");
+            }
         }
 
         protected override string GetTitle()
@@ -86,6 +99,13 @@ namespace SeniorProject.Cards.LotteryClass
                     positive = false,
                     stat = "Self Destruct",
                     amount = "100%",
+                    simepleAmount = CardInfoStat.SimpleAmount.notAssigned
+                },
+                new CardInfoStat()
+                {
+                    positive = false,
+                    stat = "Player Stats",
+                    amount = "Small",
                     simepleAmount = CardInfoStat.SimpleAmount.notAssigned
                 }
             };
