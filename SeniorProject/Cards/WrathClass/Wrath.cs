@@ -5,7 +5,8 @@ using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;
 using SeniorProject.MonoBehaviours;
-using EasierExtension;
+using EasierExtensions.Effects.FFC;
+using SeniorProject;
 
 namespace SeniorProject.Cards.WrathClass
 {
@@ -13,9 +14,11 @@ namespace SeniorProject.Cards.WrathClass
     {
         public static CardInfo Card = null;
 
+        private bool debug_l = false;
+
         public override void Callback()
         {
-            // Instantiates Pinball Class
+            // Instantiates Wrath Class
             gameObject.GetOrAddComponent<ClassNameMono>();
         }
 
@@ -25,11 +28,14 @@ namespace SeniorProject.Cards.WrathClass
             cardInfo.allowMultiple = false;
 
             // Debugging
-            //UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} has been setup.");
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Built");
+            }
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            // Fix objects not bouncing off of out of bounds
+            // Fix objects not bouncing off of map edges
             ObjectsToSpawn objectsToSpawn = ((GameObject)Resources.Load("0 cards/Mayhem")).GetComponent<Gun>().objectsToSpawn[0];
             List<ObjectsToSpawn> list = gun.objectsToSpawn.ToList();
             list.Add(
@@ -40,25 +46,29 @@ namespace SeniorProject.Cards.WrathClass
             // Modifiers
             statModifiers.automaticReload = false;
 
-            // Number of cards of this class a player has
+            // Mono(s) and adjustments
             player.gameObject.AddComponent<WrathPointAndCard>();
             player.gameObject.GetComponent<WrathPointAndCard>().numCards++;
+            player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>();
 
-            player.gameObject.GetOrAddComponent<JokesOnYou>();
-
-            //Add MonoBehaviours and Extensions
-            //characterStats.GetAdditionalData().JokesOnYou = true;
-
-            // For debugging
-            //UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} has been added to player {player.playerID}.");
+            // Debugging
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Added to Player {player.playerID}");
+            }
         }
         public override void OnRemoveCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            //Removes monobehaviours on card removal
+            // Remove Mono(s) and adjustments
+            player.gameObject.GetComponent<WrathPointAndCard>().numCards--;
             GameObject.Destroy(player.gameObject.GetOrAddComponent<WrathPointAndCard>());
-            GameObject.Destroy(player.gameObject.GetOrAddComponent<JokesOnYou>());
-            //characterStats.GetAdditionalData().JokesOnYou = false;
-            //GameObject.Destroy(player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>());
+            GameObject.Destroy(player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>());
+
+            // Debugging
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Removed from Player {player.playerID}");
+            }
         }
 
         protected override string GetTitle()
