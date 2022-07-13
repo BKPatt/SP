@@ -3,7 +3,8 @@ using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;
 using SeniorProject.MonoBehaviours;
-using EasierExtension;
+using EasierExtensions.Effects.FFC;
+using SeniorProject;
 
 namespace SeniorProject.Cards.KingClass
 {
@@ -11,9 +12,11 @@ namespace SeniorProject.Cards.KingClass
     {
         public static CardInfo Card = null;
 
+        private bool debug_l = false;
+
         public override void Callback()
         {
-            // Instantiates Lottery Class
+            // Instantiates King Class
             gameObject.GetOrAddComponent<ClassNameMono>();
         }
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers, Block block)
@@ -21,37 +24,40 @@ namespace SeniorProject.Cards.KingClass
             cardInfo.allowMultiple = false;
 
             // Debugging
-            //UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} has been setup.");
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Built");
+            }
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            // Prevents player from hurting themself with their own bounces
-            //characterStats.GetAdditionalData().JokesOnYou = true;
-            //player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>();
-
-            // Add lottery and add to number of lottery cards
-            player.gameObject.GetOrAddComponent<JokesOnYou>();
+            // Mono(s) and adjustments
+            player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>();
             player.gameObject.AddComponent<KingPointAndCard>();
             player.gameObject.GetComponent<KingPointAndCard>().numCards++;
             player.gameObject.GetComponent<KingPointAndCard>().enableHealth = true;
             player.gameObject.GetComponent<KingPointAndCard>().enableDamage = true;
 
             // Debugging
-            //UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} has been added to player {player.playerID}.");
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Added to Player {player.playerID}");
+            }
         }
         public override void OnRemoveCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            GameObject.Destroy(player.gameObject.GetOrAddComponent<JokesOnYou>());
-
+            // Removes Mono(s) and adjustments
+            GameObject.Destroy(player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>());
             gameObject.GetComponent<KingPointAndCard>().numCards--;
             gameObject.GetComponent<KingPointAndCard>().enableHealth = false;
             gameObject.GetComponent<KingPointAndCard>().enableDamage = false;
             GameObject.Destroy(player.gameObject.GetOrAddComponent<KingPointAndCard>());
 
-            //characterStats.GetAdditionalData().JokesOnYou = false;
-
             // Debugging
-            //UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} has been removed from player {player.playerID}.");
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Removed from Player {player.playerID}");
+            }
         }
 
         protected override string GetTitle()
