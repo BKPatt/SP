@@ -1,5 +1,4 @@
-﻿using UnboundLib.Cards;
-using UnityEngine;
+using UnboundLib.Cards;
 using BepInEx;
 using HarmonyLib;
 using ModdingUtils.GameModes;
@@ -18,18 +17,25 @@ namespace SeniorProject
     [BepInDependency("pykess.rounds.plugins.cardchoicespawnuniquecardpatch", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("root.classes.manager.reborn")]
     //[BepInDependency("root.classes.manager.reborn", BepInDependency.DependencyFlags.HardDependency)]
+    
     // Declares our mod to Bepin
     [BepInPlugin(ModId, ModName, Version)]
+    
     // The game our mod is associated with
     [BepInProcess("Rounds.exe")]
     public class SeniorProject : BaseUnityPlugin
     {
         private const string ModId = "com.bkpatt.rounds.SeniorProject";
         private const string ModName = "SeniorProject";
-        public const string Version = "0.0.2"; // What version are we on (major.minor.patch)?
+        public const string Version = "0.1.3"; // What version are we on (major.minor.patch)?
         public const string ModInitials = "SP";
 
         public static SeniorProject instance { get; private set; }
+
+        public static bool debug_g = false; // Debug cards
+        public static bool debug_a = false; // Debug all
+        public static bool debug_am = false; // Debug Mono
+
 
         void Awake()
         {
@@ -100,6 +106,7 @@ namespace SeniorProject
             CustomCard.BuildCard<AddLS>((card) => AddLS.Card = card);
         }
 
-        public static readonly AssetBundle EffectAsset = Jotunn.Utils.AssetUtils.LoadAssetBundleFromResources("bundle", typeof(SeniorProject).Assembly);
+        //Call bundle if made
+        //public static readonly AssetBundle EffectAsset = Jotunn.Utils.AssetUtils.LoadAssetBundleFromResources("bundle", typeof(SeniorProject).Assembly);
     }
 }
