@@ -11,51 +11,46 @@ namespace SeniorProject.MonoBehaviours
 {
     class LotteryPointAndCard : MonoBehaviour
     {
+        private System.Random random = new System.Random();
+
+        // Get player data
+        private Player player;
+
+        // Time variables to run every X seconds
         private DateTime currentTime;
         private DateTime endKs;
         private DateTime endElse;
-        private Player player;
-        private Gun gun;
-        private GunAmmo gunAmmo;
-        private CharacterStatModifiers statModifiers;
-        private Block block;
 
+        // Number of points and class cards
         private int point;
         private int stored_point;
         private int stored_cards;
 
-        private System.Random random = new System.Random();
+        private int which; //which random explosion to run (All Players, All but this.player, One Random)
+        private int randomPlayer; //which player to blow up if which == One Random
 
-        private int num = 1;
-        private int which;
-        private int randomPlayer;
+        private int bus; // bookkeeping for self-destruct random
+        private int bur; // bookkeeping for blowing up random
 
-        private int bus;
-        private int bur;
+        public int numCards = 0; // Number of class cards player has
 
-        public int numCards = 0;
-
-        public int blowUpS = 1;
-        public int blowUpSelfTimer = 10;
+        public int blowUpS = 1; // 100% chance to self-destruct
+        public int blowUpSelfTimer = 10; // Run every 10 seconds
 
         public int enableR = 0;
-        public int blowUpR = 100;
-        public int blowUpElseTimer = 60;
+        public int blowUpR = 100; // 1 in 100 chance to blow up random
+        public int blowUpElseTimer = 60; // Run every 60 seconds
 
-        public int blowUpAb = 0;
+        private int start = 0; // Tell if the game is running
 
-        private int start = 0;
+        private bool debug_l = false;
 
         public void Awake()
         {
             // Gets player data
             player = this.gameObject.GetComponentInParent<Player>();
-            statModifiers = this.gameObject.GetComponentInParent<CharacterStatModifiers>();
-            gun = this.player.GetComponent<Holding>().holdable.GetComponent<Gun>();
-            gunAmmo = GetComponent<Holding>().holdable.GetComponentInChildren<GunAmmo>();
-            block = this.gameObject.GetComponentInParent<Block>();
 
-            // Sets listener for when card pick ends
+            // Sets listener for when card pick ends, battle starts, and point ends
             GameModeManager.AddHook(GameModeHooks.HookPickEnd, OnPickEnd);
             GameModeManager.AddHook(GameModeHooks.HookPointStart, OnBattleStart);
             GameModeManager.AddHook(GameModeHooks.HookPointEnd, OnBattleEnd);
@@ -69,26 +64,47 @@ namespace SeniorProject.MonoBehaviours
 
         public void Update()
         {
-            if (num == 1)
-            {
-                which = random.Next(3);
-
-                num = 0;
-            }
-
-            currentTime = DateTime.Now;
-
+            // Don't sync random in local play
             if (PhotonNetwork.OfflineMode)
             {
+                // Only runs if player is alive and in the game
                 if (PlayerStatus.PlayerAliveAndSimulated(player))
                 {
+                    // Refresh current time every frame
+                    currentTime = DateTime.Now;
+
+                    //*****************************************************************************
+                    // Debugging
+                    if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+                    {
+                        UnityEngine.Debug.Log($"Current Time: { currentTime }");
+                    }
+                    //*****************************************************************************
+
                     // Possible death after x time
                     if (currentTime > endKs && start == 1)
                     {
                         bus = random.Next(blowUpS);
 
+                        //*****************************************************************************
+                        // Debugging
+                        if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+                        {
+                            UnityEngine.Debug.Log($"Chance To Debug: { blowUpS }");
+                            UnityEngine.Debug.Log($"Self Destruct: { bus }");
+                        }
+                        //*****************************************************************************
+
                         if (bus == 0)
                         {
+                            //*****************************************************************************
+                            // Debugging
+                            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+                            {
+                                UnityEngine.Debug.Log($"Self Destruct");
+                            }
+                            //*****************************************************************************
+
                             killSelf();
                         }
 
@@ -97,7 +113,17 @@ namespace SeniorProject.MonoBehaviours
                     // One of three conditions (likely win)
                     if (currentTime > endElse && enableR == 1 && start == 1)
                     {
+                        which = random.Next(3);
                         bur = random.Next(blowUpR);
+
+                        //*****************************************************************************
+                        // Debugging
+                        if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+                        {
+                            UnityEngine.Debug.Log($"Chance to Blow Up Random: { blowUpR }");
+                            UnityEngine.Debug.Log($"Which Random To Run: { which }");
+                        }
+                        //*****************************************************************************
 
                         // Kill random player
                         if (which == 0 && bur == 0)
@@ -110,6 +136,15 @@ namespace SeniorProject.MonoBehaviours
                             {
                                 numPlayers++;
                             }
+
+                            //*****************************************************************************
+                            // Debugging
+                            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+                            {
+                                UnityEngine.Debug.Log($"Num Players: { numPlayers }");
+                                UnityEngine.Debug.Log($"List otherPlayers: { otherPlayers }");
+                            }
+                            //*****************************************************************************
 
                             otherPlayers[randomPlayer].data.view.RPC("RPCA_Die", RpcTarget.All, new object[]
                                 {
@@ -127,12 +162,15 @@ namespace SeniorProject.MonoBehaviours
                             killAll();
                         }
 
-                        setOtherTimer();
+                        setOtherTimer(); // Reset other explosion after running
                     }
                 }
             }
+
+            // Sync random across clients if online play
             else if (this.player.GetComponent<PhotonView>().IsMine)
             {
+                // Only runs if player is alive and in game
                 if (PlayerStatus.PlayerAliveAndSimulated(player))
                 {
                     List<Player> otherPlayers = PlayerManager.instance.players.Where(player => PlayerStatus.PlayerAliveAndSimulated(player) && (player.playerID != this.player.playerID)).ToList();
@@ -144,8 +182,18 @@ namespace SeniorProject.MonoBehaviours
                         numPlayers++;
                     }
 
+                    //*****************************************************************************
+                    // Debugging
+                    if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+                    {
+                        UnityEngine.Debug.Log($"Num Players: { numPlayers }");
+                        UnityEngine.Debug.Log($"otherPlayers: { otherPlayers }");
+                    }
+                    //*****************************************************************************
+
                     this.gameObject.GetComponent<PhotonView>().RPC("RPCA_Chance", RpcTarget.All, new object[]
                     {
+                        //Pass randoms to RPCA_Chance
                         which,
                         random.Next(blowUpS),
                         random.Next(blowUpR),
@@ -155,6 +203,14 @@ namespace SeniorProject.MonoBehaviours
                     // Kill random player
                     if (currentTime > endElse && enableR == 1 && start == 1)
                     {
+                        //*****************************************************************************
+                        // Debugging
+                        if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+                        {
+                            UnityEngine.Debug.Log($"Kill rand");
+                        }
+                        //*****************************************************************************
+
                         if (which == 0 && bur == 0)
                         {
                             otherPlayers[randomPlayer].data.view.RPC("RPCA_Die", RpcTarget.All, new object[]
@@ -163,6 +219,7 @@ namespace SeniorProject.MonoBehaviours
                                 });
                         }
                     }
+                    // Other chances in RPCA_Chance
                 }
             }
         }
@@ -175,13 +232,26 @@ namespace SeniorProject.MonoBehaviours
             bur = srand3;
             randomPlayer = srand4;
 
-            if (num == 1)
+            //*****************************************************************************
+            // Debugging
+            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
             {
-                num = 0;
+                UnityEngine.Debug.Log($"Which: { which }");
+                UnityEngine.Debug.Log($"bus: { bus }");
+                UnityEngine.Debug.Log($"bur: { bur }");
+                UnityEngine.Debug.Log($"randomPlayer: { randomPlayer }");
             }
-
+            //*****************************************************************************
 
             currentTime = DateTime.Now;
+
+            //*****************************************************************************
+            // Debugging
+            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"currentTime: { currentTime }");
+            }
+            //*****************************************************************************
 
             // Possible death after x time
             if (currentTime > endKs && start == 1)
@@ -211,6 +281,7 @@ namespace SeniorProject.MonoBehaviours
             }
         }
 
+        // Self-destruct
         private void killSelf()
         {
             player.data.view.RPC("RPCA_Die", RpcTarget.All, new object[]
@@ -219,12 +290,30 @@ namespace SeniorProject.MonoBehaviours
                     });
         }
 
+        // Kill all except this.player
         private void killAbs()
         {
+            //*****************************************************************************
+            // Debugging
+            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"Run killAbs");
+            }
+            //*****************************************************************************
+
             List<Player> otherPlayers = PlayerManager.instance.players.Where(player => PlayerStatus.PlayerAliveAndSimulated(player) && (player.playerID != this.player.playerID)).ToList();
 
             int numPlayers = 0;
 
+            //*****************************************************************************
+            // Debugging
+            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"otherPlayers: { otherPlayers }");
+                UnityEngine.Debug.Log($"numPlayers: { numPlayers }");
+            }
+            //*****************************************************************************
+
             foreach (Player otherPlayer in otherPlayers)
             {
                 otherPlayers[numPlayers].data.view.RPC("RPCA_Die", RpcTarget.All, new object[]
@@ -236,12 +325,30 @@ namespace SeniorProject.MonoBehaviours
             }
         }
 
+        // Kill everyone on screen for random win
         private void killAll()
         {
+            //*****************************************************************************
+            // Debugging
+            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"killAll");
+            }
+            //*****************************************************************************
+
             List<Player> otherPlayers = PlayerManager.instance.players.Where(player => PlayerStatus.PlayerAliveAndSimulated(player)).ToList();
 
             int numPlayers = 0;
 
+            //*****************************************************************************
+            // Debugging
+            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"otherPlayers: { otherPlayers }");
+                UnityEngine.Debug.Log($"numPlayers: { numPlayers }");
+            }
+            //*****************************************************************************
+
             foreach (Player otherPlayer in otherPlayers)
             {
                 otherPlayers[numPlayers].data.view.RPC("RPCA_Die", RpcTarget.All, new object[]
@@ -253,13 +360,33 @@ namespace SeniorProject.MonoBehaviours
             }
         }
 
+        // Self-destruct timer OnBattleStart
         private void setKsTimer()
         {
             endKs = DateTime.Now.AddSeconds(blowUpSelfTimer);
+
+            //*****************************************************************************
+            // Debugging
+            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"Ran endKs");
+                UnityEngine.Debug.Log($"endKs: { endKs }");
+            }
+            //*****************************************************************************
         }
+        // Explosion timer OnBattleStart
         private void setOtherTimer()
         {
             endElse = DateTime.Now.AddSeconds(blowUpElseTimer);
+
+            //*****************************************************************************
+            // Debugging
+            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"Ran endElse");
+                UnityEngine.Debug.Log($"endElse: { endElse }");
+            }
+            //*****************************************************************************
         }
 
         // Referenced whenever card pick ends
@@ -267,6 +394,14 @@ namespace SeniorProject.MonoBehaviours
         {
             // Get current amount of rounds the player has won
             point = GameModeManager.CurrentHandler.GetTeamScore(player.teamID).rounds;
+
+            //*****************************************************************************
+            // Debugging
+            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"Points: { point }");
+            }
+            //*****************************************************************************
 
             // Set new stats
             if (point > stored_point)
@@ -285,6 +420,7 @@ namespace SeniorProject.MonoBehaviours
             yield break;
         }
 
+        // Referenced when battle starts and countdown ends
         public IEnumerator OnBattleStart(IGameModeHandler gm)
         {
             setOtherTimer();
@@ -295,6 +431,7 @@ namespace SeniorProject.MonoBehaviours
             yield break;
         }
 
+        // Referenced when a player wins the round
         public IEnumerator OnBattleEnd(IGameModeHandler gm)
         {
             start = 0;
