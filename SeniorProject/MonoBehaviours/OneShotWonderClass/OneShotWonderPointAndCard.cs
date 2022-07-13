@@ -6,12 +6,12 @@ namespace SeniorProject.MonoBehaviours
 {
     class OneShotWonderPointAndCard : MonoBehaviour
     {
+        // Get player data and stats
         private Player player;
         private Gun gun;
         private GunAmmo gunAmmo;
-        private CharacterStatModifiers statModifiers;
-        private Block block;
 
+        // Bookkeeping to tell if stats should be added to player
         private int point;
         private int store_point = 0;
         private int store_numCards = 0;
@@ -19,24 +19,26 @@ namespace SeniorProject.MonoBehaviours
         private int store_damage = 0;
         private int store_ammo = 0;
 
+        // Bullet stats
         public bool unblock_bullet = false;
         public bool ignore_wall = false;
         public bool bullet_grav = false;
 
-        public int numCards = 0;
+        public int numCards = 0; //Number of class cards the player has
 
+        // int's to tell when stats should be added to player
         public int addDamage = 0;
         public int projSpeed = 0;
         public int ammo = 0;
+
+        private bool debug_l = false;
 
         public void Awake()
         {
             // Gets player data
             player = this.gameObject.GetComponentInParent<Player>();
-            statModifiers = this.gameObject.GetComponentInParent<CharacterStatModifiers>();
             gun = this.player.GetComponent<Holding>().holdable.GetComponent<Gun>();
             gunAmmo = GetComponent<Holding>().holdable.GetComponentInChildren<GunAmmo>();
-            block = this.gameObject.GetComponentInParent<Block>();
 
             // Sets listener for when card pick ends
             GameModeManager.AddHook(GameModeHooks.HookPickEnd, OnPickEnd);
@@ -64,12 +66,54 @@ namespace SeniorProject.MonoBehaviours
             // Sets health if the player has won a new round or another class card
             if (point > store_point || numCards > store_numCards)
             {
+                //*****************************************************************************
+                // Debugging
+                if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+                {
+                    UnityEngine.Debug.Log($"Damage Before: { gun.damage }");
+                }
+                //*****************************************************************************
+
+
+
+                // Modifiers
                 gun.damage = (point + numCards);
 
-                // Trys to ensure projectile size doesn't get insanely high
+
+
+                //*****************************************************************************
+                // Debugging
+                if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+                {
+                    UnityEngine.Debug.Log($"Damage After: { gun.damage }");
+                }
+                //*****************************************************************************
+
+                // Tries to ensure projectile size doesn't get insanely high
                 if (gun.damage > 100)
                 {
+                    //*****************************************************************************
+                    // Debugging
+                    if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+                    {
+                        UnityEngine.Debug.Log($"Before Proj Size: { gun.projectileSize }");
+                    }
+                    //*****************************************************************************
+
+
+
+                    // Modifiers
                     gun.projectileSize *= (float)((100)/(10 * (point + (numCards * 2))));
+
+
+
+                    //*****************************************************************************
+                    // Debugging
+                    if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+                    {
+                        UnityEngine.Debug.Log($"After Proj Size: { gun.projectileSize }");
+                    }
+                    //*****************************************************************************
                 }
 
                 store_point = point + 1;
@@ -120,7 +164,28 @@ namespace SeniorProject.MonoBehaviours
             // Makes sure reload time isn't explicitly set below 4s
             if (gun.reloadTime < 4)
             {
+                //*****************************************************************************
+                // Debugging
+                if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+                {
+                    UnityEngine.Debug.Log($"Before Reload Time: { gun.reloadTime }");
+                }
+                //*****************************************************************************
+
+
+
+                // Modifiers
                 gun.reloadTime = 4;
+
+
+
+                //*****************************************************************************
+                // Debugging
+                if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+                {
+                    UnityEngine.Debug.Log($"After Reload Time: { gun.reloadTime }");
+                }
+                //*****************************************************************************
             }
         }
     }
