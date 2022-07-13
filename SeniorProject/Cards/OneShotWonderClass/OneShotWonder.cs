@@ -3,6 +3,7 @@ using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;
 using SeniorProject.MonoBehaviours;
+using SeniorProject;
 
 namespace SeniorProject.Cards.OneShotWonderClass
 {
@@ -10,9 +11,11 @@ namespace SeniorProject.Cards.OneShotWonderClass
     {
         public static CardInfo Card = null;
 
+        private bool debug_l = false;
+
         public override void Callback()
         {
-            // Instantiates Pinball Class
+            // Instantiates OneShotWonder Class
             gameObject.GetOrAddComponent<ClassNameMono>();
         }
 
@@ -22,25 +25,37 @@ namespace SeniorProject.Cards.OneShotWonderClass
             cardInfo.allowMultiple = false;
 
             // Debugging
-            //UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} has been setup.");
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Built");
+            }
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             // Modifiers
             statModifiers.automaticReload = false;
 
-            // Number of cards of this class a player has
+            // Mono(s) and adjustments
             player.gameObject.AddComponent<OneShotWonderPointAndCard>();
             player.gameObject.GetComponent<OneShotWonderPointAndCard>().numCards++;
 
-            // For debugging
-            //UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} has been added to player {player.playerID}.");
+            // Debugging
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Added to Player {player.playerID}");
+            }
         }
         public override void OnRemoveCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            //Removes monobehaviours on card removal
+            // Remove Mono(s) and adjustments
             gameObject.GetOrAddComponent<OneShotWonderPointAndCard>().numCards--;
             GameObject.Destroy(player.gameObject.GetOrAddComponent<OneShotWonderPointAndCard>());
+
+            // Debugging
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Removed from Player {player.playerID}");
+            }
         }
 
         protected override string GetTitle()
