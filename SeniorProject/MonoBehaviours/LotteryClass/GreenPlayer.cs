@@ -8,6 +8,8 @@ using UnboundLib.Networking;
 using System.Reflection;
 using ModdingUtils.Utils;
 
+// Code mostly from Pykess' "King Midas" Card (with his permission)
+// All credit for this code goes to Pykess
 namespace SeniorProject.MonoBehaviours
 {
     class GreenPlayer : MonoBehaviour
