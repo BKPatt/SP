@@ -3,6 +3,7 @@ using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;
 using SeniorProject.MonoBehaviours;
+using SeniorProject;
 
 namespace SeniorProject.Cards.GuardianClass
 {
@@ -10,28 +11,47 @@ namespace SeniorProject.Cards.GuardianClass
     {
         public static CardInfo Card = null;
 
+        private bool debug_l = false;
+
         public override void Callback()
         {
-            // Instantiates Pinball Class
+            // Instantiates Guardian Class
             gameObject.GetOrAddComponent<ClassNameMono>();
         }
         public override void SetupCard(CardInfo cardInfo, Gun gun, ApplyCardStats cardStats, CharacterStatModifiers statModifiers, Block block)
         {
             // Modifiers
             cardInfo.allowMultiple = false;
-            
-            UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} has been setup.");
+
+            // Debugging
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Built");
+            }
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
+            // Mono(s) and adjustments
             player.gameObject.AddComponent<GuardianPointAndCard>();
             player.gameObject.GetComponent<GuardianPointAndCard>().numCards++;
 
-            UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} has been added to player {player.playerID}.");
+            // Debugging
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Added to Player {player.playerID}");
+            }
         }
         public override void OnRemoveCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} has been removed from player {player.playerID}.");
+            // Remove Mono(s) and adjustments
+            player.gameObject.GetComponent<GuardianPointAndCard>().numCards--;
+            GameObject.Destroy(player.gameObject.GetOrAddComponent<GuardianPointAndCard>());
+
+            // Debugging
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Removed from Player {player.playerID}");
+            }
         }
 
         protected override string GetTitle()
@@ -70,7 +90,7 @@ namespace SeniorProject.Cards.GuardianClass
                 },
                 new CardInfoStat()
                 {
-                    positive = true,
+                    positive = false,
                     stat = "Minimum Gravity",
                     amount = "+10%",
                     simepleAmount = CardInfoStat.SimpleAmount.notAssigned
