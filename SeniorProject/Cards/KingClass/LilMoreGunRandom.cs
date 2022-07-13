@@ -3,6 +3,7 @@ using UnboundLib;
 using UnboundLib.Cards;
 using UnityEngine;
 using SeniorProject.MonoBehaviours;
+using SeniorProject;
 
 namespace SeniorProject.Cards.KingClass
 {
@@ -10,9 +11,11 @@ namespace SeniorProject.Cards.KingClass
     {
         public static CardInfo Card = null;
 
+        private bool debug_l = false;
+
         public override void Callback()
         {
-            // Declares this card as part of the Pinball class
+            // Declares this card as part of the King class
             gameObject.GetOrAddComponent<ClassNameMono>().className = KingClass.name;
         }
 
@@ -21,29 +24,39 @@ namespace SeniorProject.Cards.KingClass
             // Modifiers
             cardInfo.allowMultiple = false;
 
-            // Debug
-            //UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Built");
+            // Debugging
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Built");
+            }
         }
 
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            // Sets new stats for Pinball class
+            // Mono(s) and adjustments
             player.gameObject.GetComponent<KingPointAndCard>().numCards++;
             player.gameObject.GetComponent<KingPointAndCard>().enableBounce = true;
-            //player.gameObject.GetComponent<KingPointAndCard>().enableSpread = true;
             player.gameObject.GetComponent<KingPointAndCard>().enableProj = true;
 
-            // Debug
-            //UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Added to Player {player.playerID}");
+            // Debugging
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Added to Player {player.playerID}");
+            }
         }
 
-        public override void OnRemoveCard()
+        public override void OnRemoveCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            // Sets stats back if the card is removed
+            // Removes Mono(s) and adjustments
             gameObject.GetComponent<KingPointAndCard>().numCards--;
             gameObject.GetComponent<KingPointAndCard>().enableBounce = false;
-            //gameObject.GetComponent<KingPointAndCard>().enableSpread = false;
             gameObject.GetComponent<KingPointAndCard>().enableProj = false;
+
+            // Debugging
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Removed from Player {player.playerID}");
+            }
         }
 
         protected override string GetTitle()
@@ -69,7 +82,7 @@ namespace SeniorProject.Cards.KingClass
                 },
                 new CardInfoStat()
                 {
-                    positive = false,
+                    positive = true,
                     stat = "Knockback",
                     amount = "1-X",
                     simepleAmount = CardInfoStat.SimpleAmount.notAssigned
