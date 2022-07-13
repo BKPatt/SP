@@ -5,13 +5,16 @@ using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;
 using SeniorProject.MonoBehaviours;
-using EasierExtension;
+using EasierExtensions.Effects.FFC;
+using SeniorProject;
 
 namespace SeniorProject.Cards.PinballClass
 {
     class Pinball : CustomCard
     {
         public static CardInfo Card = null;
+
+        private bool debug_l = false;
 
         public override void Callback()
         {
@@ -26,11 +29,14 @@ namespace SeniorProject.Cards.PinballClass
             gun.damage = 0.70f;
 
             // Debugging
-            //UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} has been setup.");
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Built");
+            }
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            // Fix objects not bouncing off of out of bounds
+            // Fix objects not bouncing off of map edges
             ObjectsToSpawn objectsToSpawn = ((GameObject)Resources.Load("0 cards/Mayhem")).GetComponent<Gun>().objectsToSpawn[0];
             List<ObjectsToSpawn> list = gun.objectsToSpawn.ToList();
             list.Add(
@@ -41,26 +47,28 @@ namespace SeniorProject.Cards.PinballClass
             // Modifiers
             statModifiers.automaticReload = false;
 
-            // Number of cards of this class a player has
-            player.gameObject.GetOrAddComponent<JokesOnYou>();
+            // Mono(s) and adjustments
+            player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>();
             player.gameObject.AddComponent<PinballPointAndCard>();
             player.transform.gameObject.GetComponent<PinballPointAndCard>().numCards++;
 
-            //Add MonoBehaviours and Extensions
-            //characterStats.GetAdditionalData().JokesOnYou = true;
-            //player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>();
-
             // For debugging
-            //UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} has been added to player {player.playerID}.");
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Added to Player {player.playerID}");
+            }
         }
         public override void OnRemoveCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            //Removes monobehaviours on card removal
+            // Remove Mono(s) and adjustments
             GameObject.Destroy(player.gameObject.GetOrAddComponent<PinballPointAndCard>());
-            GameObject.Destroy(player.gameObject.GetOrAddComponent<JokesOnYou>());
+            GameObject.Destroy(player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>());
 
-            //characterStats.GetAdditionalData().JokesOnYou = false;
-            //GameObject.Destroy(player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>());
+            // Debugging
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Removed from Player {player.playerID}");
+            }
         }
 
         protected override string GetTitle()
