@@ -3,12 +3,15 @@ using UnboundLib;
 using UnboundLib.Cards;
 using UnityEngine;
 using SeniorProject.MonoBehaviours;
+using SeniorProject;
 
 namespace SeniorProject.Cards.PinballClass
 {
     class BunchoBounces : CustomCard
     {
         public static CardInfo Card = null;
+
+        private bool debug_l = false;
 
         public override void Callback()
         {
@@ -21,27 +24,39 @@ namespace SeniorProject.Cards.PinballClass
             // Modifiers
             cardInfo.allowMultiple = true;
 
-            // Debug
-            //UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Built");
+            // Debugging
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Built");
+            }
         }
 
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            // Sets new stats for Pinball class
+            // Mono(s) and adjustments
             player.gameObject.GetComponent<PinballPointAndCard>().numCards++;
             player.gameObject.GetComponent<PinballPointAndCard>().bounce += 5;
             player.gameObject.GetComponent<PinballPointAndCard>().minReload += 1;
 
-            // Debug
-            //UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Added to Player {player.playerID}");
+            // Debugging
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Added to Player {player.playerID}");
+            }
         }
 
-        public override void OnRemoveCard()
+        public override void OnRemoveCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
-            // Sets stats back if the card is removed
+            // Remove Mono(s) and adjustments
             gameObject.GetComponent<PinballPointAndCard>().numCards--;
             gameObject.GetComponent<PinballPointAndCard>().bounce -= 5;
             gameObject.GetComponent<PinballPointAndCard>().minReload -= 1;
+
+            // Debugging
+            if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"[{SeniorProject.ModInitials}][Card] {GetTitle()} Removed from Player {player.playerID}");
+            }
         }
 
         protected override string GetTitle()
