@@ -6,17 +6,24 @@ namespace SeniorProject.MonoBehaviours
 {
     class PinballPointAndCard : MonoBehaviour
     {
+        // Get player data and stats
         private Player player;
         private Gun gun;
         private GunAmmo gunAmmo;
 
+        // Number of rounds a player has won
         private int point;
 
+        // Number of class cards this.player has
         public int numCards = 0;
+
+        // Locks some stats into the pinball
         public int bounce = 5;
         public int max_ammo = 1;
         public float minReload = 5;
         public float proj_speed = 0.5f;
+
+        private bool debug_l = false;
 
         public void Awake()
         {
@@ -34,19 +41,75 @@ namespace SeniorProject.MonoBehaviours
             setStats();
         }
 
+        // Runs when card pick ends
         public IEnumerator OnPickEnd(IGameModeHandler gm)
         {
             point = GameModeManager.CurrentHandler.GetTeamScore(player.teamID).rounds;
 
+            //*****************************************************************************
+            // Debugging
+            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"Points: { point }");
+            }
+            //*****************************************************************************
+
             setStats();
 
+            //*****************************************************************************
+            // Debugging
+            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"Before bounce add: { gun.reflects }");
+            }
+            //*****************************************************************************
+
+
+
+            // Modifiers
             gun.reflects += ((point + (numCards * 2)));
+
+
+
+            //*****************************************************************************
+            // Debugging
+            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"After bounce add: { gun.reflects }");
+            }
+            //*****************************************************************************
 
             yield break;
         }
 
         private void setStats()
         {
+            //*****************************************************************************
+            // Debugging
+            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"Ran setStats");
+            }
+            //*****************************************************************************
+
+
+
+            //*****************************************************************************
+            // Debugging
+            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"Grav: { gun.gravity }");
+                UnityEngine.Debug.Log($"Bounces: { gun.reflects }");
+                UnityEngine.Debug.Log($"Max Ammo: { gunAmmo.maxAmmo }");
+                UnityEngine.Debug.Log($"Num Proj: { gun.numberOfProjectiles }");
+                UnityEngine.Debug.Log($"Proj Speed: { gun.projectileSpeed }");
+                UnityEngine.Debug.Log($"Reload Time: { gunAmmo.reloadTime }");
+            }
+            //*****************************************************************************
+
+
+
+            // Modifiers
             gun.gravity = 0;
             gun.reflects = bounce;
             gunAmmo.maxAmmo = max_ammo;
@@ -59,6 +122,31 @@ namespace SeniorProject.MonoBehaviours
             {
                 gunAmmo.reloadTime = minReload;
             }
+
+
+
+            //*****************************************************************************
+            // Debugging
+            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"Grav: { gun.gravity }");
+                UnityEngine.Debug.Log($"Bounces: { gun.reflects }");
+                UnityEngine.Debug.Log($"Max Ammo: { gunAmmo.maxAmmo }");
+                UnityEngine.Debug.Log($"Num Proj: { gun.numberOfProjectiles }");
+                UnityEngine.Debug.Log($"Proj Speed: { gun.projectileSpeed }");
+                UnityEngine.Debug.Log($"Reload Time: { gunAmmo.reloadTime }");
+            }
+            //*****************************************************************************
+
+
+
+            //*****************************************************************************
+            // Debugging
+            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
+            {
+                UnityEngine.Debug.Log($"End setStats");
+            }
+            //*****************************************************************************
         }
     }
 }
