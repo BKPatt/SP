@@ -3,8 +3,8 @@ using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;
 using SeniorProject.MonoBehaviours;
-using EasierExtensions.Effects.FFC;
 using SeniorProject;
+using SeniorProject.Extensions;
 
 namespace SeniorProject.Cards.KingClass
 {
@@ -32,7 +32,8 @@ namespace SeniorProject.Cards.KingClass
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             // Mono(s) and adjustments
-            player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>();
+            characterStats.GetAdditionalData().JokesOnYou = true;
+
             player.gameObject.AddComponent<KingPointAndCard>();
             player.gameObject.GetComponent<KingPointAndCard>().numCards++;
             player.gameObject.GetComponent<KingPointAndCard>().enableHealth = true;
@@ -47,7 +48,8 @@ namespace SeniorProject.Cards.KingClass
         public override void OnRemoveCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
             // Removes Mono(s) and adjustments
-            GameObject.Destroy(player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>());
+            characterStats.GetAdditionalData().JokesOnYou = false;
+
             gameObject.GetComponent<KingPointAndCard>().numCards--;
             gameObject.GetComponent<KingPointAndCard>().enableHealth = false;
             gameObject.GetComponent<KingPointAndCard>().enableDamage = false;
