@@ -5,7 +5,7 @@ using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;
 using SeniorProject.MonoBehaviours;
-using EasierExtensions.Effects.FFC;
+using SeniorProject.Extensions;
 using SeniorProject;
 
 namespace SeniorProject.Cards.WrathClass
@@ -49,7 +49,8 @@ namespace SeniorProject.Cards.WrathClass
             // Mono(s) and adjustments
             player.gameObject.AddComponent<WrathPointAndCard>();
             player.gameObject.GetComponent<WrathPointAndCard>().numCards++;
-            player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>();
+
+            characterStats.GetAdditionalData().JokesOnYou = true;
 
             // Debugging
             if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
@@ -62,7 +63,8 @@ namespace SeniorProject.Cards.WrathClass
             // Remove Mono(s) and adjustments
             player.gameObject.GetComponent<WrathPointAndCard>().numCards--;
             GameObject.Destroy(player.gameObject.GetOrAddComponent<WrathPointAndCard>());
-            GameObject.Destroy(player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>());
+
+            characterStats.GetAdditionalData().JokesOnYou = false;
 
             // Debugging
             if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
