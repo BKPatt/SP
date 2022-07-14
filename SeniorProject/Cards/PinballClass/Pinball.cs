@@ -5,7 +5,7 @@ using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;
 using SeniorProject.MonoBehaviours;
-using EasierExtensions.Effects.FFC;
+using SeniorProject.Extensions;
 using SeniorProject;
 
 namespace SeniorProject.Cards.PinballClass
@@ -48,7 +48,8 @@ namespace SeniorProject.Cards.PinballClass
             statModifiers.automaticReload = false;
 
             // Mono(s) and adjustments
-            player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>();
+            characterStats.GetAdditionalData().JokesOnYou = true;
+
             player.gameObject.AddComponent<PinballPointAndCard>();
             player.transform.gameObject.GetComponent<PinballPointAndCard>().numCards++;
 
@@ -62,7 +63,8 @@ namespace SeniorProject.Cards.PinballClass
         {
             // Remove Mono(s) and adjustments
             GameObject.Destroy(player.gameObject.GetOrAddComponent<PinballPointAndCard>());
-            GameObject.Destroy(player.gameObject.GetOrAddComponent<JokesOnYouHitEffect>());
+
+            characterStats.GetAdditionalData().JokesOnYou = false;
 
             // Debugging
             if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
