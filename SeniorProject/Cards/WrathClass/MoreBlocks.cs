@@ -3,7 +3,6 @@ using UnboundLib;
 using UnboundLib.Cards;
 using UnityEngine;
 using SeniorProject.MonoBehaviours;
-using SeniorProject;
 
 namespace SeniorProject.Cards.WrathClass
 {
@@ -75,7 +74,7 @@ namespace SeniorProject.Cards.WrathClass
                 {
                     positive = true,
                     stat = "Blocks",
-                    amount = "+1",
+                    amount = "+2",
                     simepleAmount = CardInfoStat.SimpleAmount.notAssigned
                 }
             };
