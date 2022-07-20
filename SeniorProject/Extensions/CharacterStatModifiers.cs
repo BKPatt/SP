@@ -1,29 +1,24 @@
-﻿using System;
-using System.Collections;
+using System;
 using System.Runtime.CompilerServices;
 using HarmonyLib;
-using UnboundLib.GameModes;
-
 
 //*********************************************
 // This code origininated in PFFC by Tess/Root
 // https://github.com/Tess-y/FFC_Port
 //*********************************************
 
-
 namespace SeniorProject.Extensions
 {
     [Serializable]
     public class CharacterStatModifiersAdditionalData
     {
-        public bool JokesOnYou;
+        public bool RemoveSelfDamage;
 
         public CharacterStatModifiersAdditionalData()
         {
-            JokesOnYou = false;
+            RemoveSelfDamage = false;
         }
     }
-
 
     public static class CharacterStatModifiersExtension
     {
@@ -47,14 +42,13 @@ namespace SeniorProject.Extensions
             }
         }
 
-
         [HarmonyPatch(typeof(CharacterStatModifiers), "ResetStats")]
         private class CharacterStatModifiersPatchResetStats
         {
             private static void Prefix(CharacterStatModifiers __instance)
             {
                 var additionalData = __instance.GetAdditionalData();
-                additionalData.JokesOnYou = false;
+                additionalData.RemoveSelfDamage = false;
             }
         }
     }
