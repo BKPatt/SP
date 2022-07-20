@@ -3,7 +3,6 @@ using UnboundLib;
 using UnboundLib.Cards;
 using UnityEngine;
 using SeniorProject.MonoBehaviours;
-using SeniorProject;
 
 namespace SeniorProject.Cards.KingClass
 {
@@ -35,7 +34,7 @@ namespace SeniorProject.Cards.KingClass
         {
             // Mono(s) and adjustments
             player.gameObject.GetComponent<KingPointAndCard>().numCards++;
-            player.gameObject.GetComponent<KingPointAndCard>().health += 100;
+            player.gameObject.GetComponent<KingPointAndCard>().r_health += 100;
             player.gameObject.GetComponent<KingPointAndCard>().sDamageOver += 1;
 
             // Debugging
@@ -49,7 +48,7 @@ namespace SeniorProject.Cards.KingClass
         {
             // Remove Mono(s) and adjustments
             gameObject.GetComponent<KingPointAndCard>().numCards--;
-            gameObject.GetComponent<KingPointAndCard>().health -= 100;
+            gameObject.GetComponent<KingPointAndCard>().r_health -= 100;
             gameObject.GetComponent<KingPointAndCard>().sDamageOver -= 1;
 
             // Debugging
