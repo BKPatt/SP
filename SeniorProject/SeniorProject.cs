@@ -27,7 +27,7 @@ namespace SeniorProject
     {
         private const string ModId = "com.bkpatt.rounds.SeniorProject";
         private const string ModName = "SeniorProject";
-        public const string Version = "0.1.4"; // What version are we on (major.minor.patch)?
+        public const string Version = "1.0.0"; // What version are we on (major.minor.patch)?
         public const string ModInitials = "SP";
 
         public static SeniorProject instance { get; private set; }
@@ -105,8 +105,5 @@ namespace SeniorProject
             CustomCard.BuildCard<AddHealth>((card) => AddHealth.Card = card);
             CustomCard.BuildCard<AddLS>((card) => AddLS.Card = card);
         }
-
-        //Call bundle if made
-        //public static readonly AssetBundle EffectAsset = Jotunn.Utils.AssetUtils.LoadAssetBundleFromResources("bundle", typeof(SeniorProject).Assembly);
     }
 }
