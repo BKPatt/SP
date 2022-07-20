@@ -38,12 +38,10 @@ namespace SeniorProject.MonoBehaviours
         public int blowUpSelfTimer = 10; // Run every 10 seconds
 
         public int enableR = 0;
-        public int blowUpR = 100; // 1 in 100 chance to blow up random
-        public int blowUpElseTimer = 60; // Run every 60 seconds
+        public int blowUpR = 50; // 1 in 50 chance to blow up random
+        public int blowUpElseTimer = 30; // Run every 30 seconds
 
         private int start = 0; // Tell if the game is running
-
-        private bool debug_l = false;
 
         public void Awake()
         {
@@ -73,38 +71,13 @@ namespace SeniorProject.MonoBehaviours
                     // Refresh current time every frame
                     currentTime = DateTime.Now;
 
-                    //*****************************************************************************
-                    // Debugging
-                    if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                    {
-                        UnityEngine.Debug.Log($"Current Time: { currentTime }");
-                    }
-                    //*****************************************************************************
-
                     // Possible death after x time
                     if (currentTime > endKs && start == 1)
                     {
                         bus = random.Next(blowUpS);
 
-                        //*****************************************************************************
-                        // Debugging
-                        if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                        {
-                            UnityEngine.Debug.Log($"Chance To Debug: { blowUpS }");
-                            UnityEngine.Debug.Log($"Self Destruct: { bus }");
-                        }
-                        //*****************************************************************************
-
                         if (bus == 0)
                         {
-                            //*****************************************************************************
-                            // Debugging
-                            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                            {
-                                UnityEngine.Debug.Log($"Self Destruct");
-                            }
-                            //*****************************************************************************
-
                             killSelf();
                         }
 
@@ -115,15 +88,6 @@ namespace SeniorProject.MonoBehaviours
                     {
                         which = random.Next(3);
                         bur = random.Next(blowUpR);
-
-                        //*****************************************************************************
-                        // Debugging
-                        if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                        {
-                            UnityEngine.Debug.Log($"Chance to Blow Up Random: { blowUpR }");
-                            UnityEngine.Debug.Log($"Which Random To Run: { which }");
-                        }
-                        //*****************************************************************************
 
                         // Kill random player
                         if (which == 0 && bur == 0)
@@ -136,15 +100,6 @@ namespace SeniorProject.MonoBehaviours
                             {
                                 numPlayers++;
                             }
-
-                            //*****************************************************************************
-                            // Debugging
-                            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                            {
-                                UnityEngine.Debug.Log($"Num Players: { numPlayers }");
-                                UnityEngine.Debug.Log($"List otherPlayers: { otherPlayers }");
-                            }
-                            //*****************************************************************************
 
                             otherPlayers[randomPlayer].data.view.RPC("RPCA_Die", RpcTarget.All, new object[]
                                 {
@@ -182,15 +137,6 @@ namespace SeniorProject.MonoBehaviours
                         numPlayers++;
                     }
 
-                    //*****************************************************************************
-                    // Debugging
-                    if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                    {
-                        UnityEngine.Debug.Log($"Num Players: { numPlayers }");
-                        UnityEngine.Debug.Log($"otherPlayers: { otherPlayers }");
-                    }
-                    //*****************************************************************************
-
                     this.gameObject.GetComponent<PhotonView>().RPC("RPCA_Chance", RpcTarget.All, new object[]
                     {
                         //Pass randoms to RPCA_Chance
@@ -203,14 +149,6 @@ namespace SeniorProject.MonoBehaviours
                     // Kill random player
                     if (currentTime > endElse && enableR == 1 && start == 1)
                     {
-                        //*****************************************************************************
-                        // Debugging
-                        if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                        {
-                            UnityEngine.Debug.Log($"Kill rand");
-                        }
-                        //*****************************************************************************
-
                         if (which == 0 && bur == 0)
                         {
                             otherPlayers[randomPlayer].data.view.RPC("RPCA_Die", RpcTarget.All, new object[]
@@ -231,27 +169,7 @@ namespace SeniorProject.MonoBehaviours
             bus = srand2;
             bur = srand3;
             randomPlayer = srand4;
-
-            //*****************************************************************************
-            // Debugging
-            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-            {
-                UnityEngine.Debug.Log($"Which: { which }");
-                UnityEngine.Debug.Log($"bus: { bus }");
-                UnityEngine.Debug.Log($"bur: { bur }");
-                UnityEngine.Debug.Log($"randomPlayer: { randomPlayer }");
-            }
-            //*****************************************************************************
-
             currentTime = DateTime.Now;
-
-            //*****************************************************************************
-            // Debugging
-            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-            {
-                UnityEngine.Debug.Log($"currentTime: { currentTime }");
-            }
-            //*****************************************************************************
 
             // Possible death after x time
             if (currentTime > endKs && start == 1)
@@ -293,26 +211,9 @@ namespace SeniorProject.MonoBehaviours
         // Kill all except this.player
         private void killAbs()
         {
-            //*****************************************************************************
-            // Debugging
-            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-            {
-                UnityEngine.Debug.Log($"Run killAbs");
-            }
-            //*****************************************************************************
-
             List<Player> otherPlayers = PlayerManager.instance.players.Where(player => PlayerStatus.PlayerAliveAndSimulated(player) && (player.playerID != this.player.playerID)).ToList();
 
             int numPlayers = 0;
-
-            //*****************************************************************************
-            // Debugging
-            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-            {
-                UnityEngine.Debug.Log($"otherPlayers: { otherPlayers }");
-                UnityEngine.Debug.Log($"numPlayers: { numPlayers }");
-            }
-            //*****************************************************************************
 
             foreach (Player otherPlayer in otherPlayers)
             {
@@ -328,26 +229,9 @@ namespace SeniorProject.MonoBehaviours
         // Kill everyone on screen for random win
         private void killAll()
         {
-            //*****************************************************************************
-            // Debugging
-            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-            {
-                UnityEngine.Debug.Log($"killAll");
-            }
-            //*****************************************************************************
-
             List<Player> otherPlayers = PlayerManager.instance.players.Where(player => PlayerStatus.PlayerAliveAndSimulated(player)).ToList();
 
             int numPlayers = 0;
-
-            //*****************************************************************************
-            // Debugging
-            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-            {
-                UnityEngine.Debug.Log($"otherPlayers: { otherPlayers }");
-                UnityEngine.Debug.Log($"numPlayers: { numPlayers }");
-            }
-            //*****************************************************************************
 
             foreach (Player otherPlayer in otherPlayers)
             {
@@ -364,29 +248,11 @@ namespace SeniorProject.MonoBehaviours
         private void setKsTimer()
         {
             endKs = DateTime.Now.AddSeconds(blowUpSelfTimer);
-
-            //*****************************************************************************
-            // Debugging
-            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-            {
-                UnityEngine.Debug.Log($"Ran endKs");
-                UnityEngine.Debug.Log($"endKs: { endKs }");
-            }
-            //*****************************************************************************
         }
         // Explosion timer OnBattleStart
         private void setOtherTimer()
         {
             endElse = DateTime.Now.AddSeconds(blowUpElseTimer);
-
-            //*****************************************************************************
-            // Debugging
-            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-            {
-                UnityEngine.Debug.Log($"Ran endElse");
-                UnityEngine.Debug.Log($"endElse: { endElse }");
-            }
-            //*****************************************************************************
         }
 
         // Referenced whenever card pick ends
@@ -394,14 +260,6 @@ namespace SeniorProject.MonoBehaviours
         {
             // Get current amount of rounds the player has won
             point = GameModeManager.CurrentHandler.GetTeamScore(player.teamID).rounds;
-
-            //*****************************************************************************
-            // Debugging
-            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-            {
-                UnityEngine.Debug.Log($"Points: { point }");
-            }
-            //*****************************************************************************
 
             // Set new stats
             if (point > stored_point)
