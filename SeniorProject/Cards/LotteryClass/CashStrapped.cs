@@ -3,7 +3,6 @@ using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;
 using SeniorProject.MonoBehaviours;
-using SeniorProject;
 
 namespace SeniorProject.Cards.LotteryClass
 {
@@ -68,7 +67,7 @@ namespace SeniorProject.Cards.LotteryClass
         }
         protected override CardInfo.Rarity GetRarity()
         {
-            return CardInfo.Rarity.Rare;
+            return CardInfo.Rarity.Common;
         }
         protected override CardInfoStat[] GetStats()
         {
