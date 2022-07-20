@@ -8,7 +8,6 @@ namespace SeniorProject.MonoBehaviours
     {
         // Player data and components
         private Player player;
-        private CharacterStatModifiers statModifiers;
         private Block block;
 
         // Player round wins
@@ -25,13 +24,10 @@ namespace SeniorProject.MonoBehaviours
         public int block_cd = 0;
         public int add_block = 0;
 
-        private bool debug_l = false;
-
         public void Awake()
         {
             // Gets player data
             player = this.gameObject.GetComponentInParent<Player>();
-            statModifiers = this.gameObject.GetComponentInParent<CharacterStatModifiers>();
             block = this.gameObject.GetComponentInParent<Block>();
 
             // Sets listener for when card pick ends
@@ -53,47 +49,17 @@ namespace SeniorProject.MonoBehaviours
             // Get current amount of rounds the player has won
             point = GameModeManager.CurrentHandler.GetTeamScore(player.teamID).rounds;
 
-
-            //*****************************************************************************
-            // Debugging
-            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-            {
-                UnityEngine.Debug.Log($"Point: { point }");
-            }
-            //*****************************************************************************
-
-
-
-            // Set new stats
             setStats();
 
 
 
-            // Sets health if the player has won a new round or another class card
+            // Sets block cooldown if the player has won a new round or another class card
             if (point > store_point || numCards > store_numCards)
             {
-                //*****************************************************************************
-                // Debugging
-                if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                {
-                    UnityEngine.Debug.Log($"Blocks: { block.additionalBlocks }");
+                if (block.cooldown > 0.5f)
+                { 
+                    block.cooldown -= 0.5f;
                 }
-                //*****************************************************************************
-
-
-
-                // Modifiers
-                block.additionalBlocks += 1;
-
-
-
-                //*****************************************************************************
-                // Debugging
-                if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                {
-                    UnityEngine.Debug.Log($"Blocks: { block.additionalBlocks }");
-                }
-                //*****************************************************************************
 
                 store_point = point + 1;
                 store_numCards = numCards + 1;
@@ -106,55 +72,13 @@ namespace SeniorProject.MonoBehaviours
         {
             if (block_cd > store_blockcd && block.cooldown > 0.25)
             {
-                //*****************************************************************************
-                // Debugging
-                if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                {
-                    UnityEngine.Debug.Log($"Block Cd: { block.cooldown }");
-                }
-                //*****************************************************************************
-
-
-
-                // Modifiers
                 block.cooldown -= 0.25f;
-
-
-
-                //*****************************************************************************
-                // Debugging
-                if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                {
-                    UnityEngine.Debug.Log($"Block Cd: { block.cooldown }");
-                }
-                //*****************************************************************************
 
                 store_blockcd = block_cd;
             }
             if (add_block > store_addBlock)
             {
-                //*****************************************************************************
-                // Debugging
-                if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                {
-                    UnityEngine.Debug.Log($"Additional Blocks: { block.additionalBlocks }");
-                }
-                //*****************************************************************************
-
-
-
-                // Modifiers
-                block.additionalBlocks += 1;
-
-
-
-                //*****************************************************************************
-                // Debugging
-                if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                {
-                    UnityEngine.Debug.Log($"Additional Blocks: { block.additionalBlocks }");
-                }
-                //*****************************************************************************
+                block.additionalBlocks += 2;
             }
         }
     }
