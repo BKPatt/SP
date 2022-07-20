@@ -1,6 +1,5 @@
 using ClassesManagerReborn;
 using System.Collections;
-using SeniorProject;
 
 namespace SeniorProject.Cards.GuardianClass
 {
@@ -25,7 +24,7 @@ namespace SeniorProject.Cards.GuardianClass
             ClassesRegistry.Register(ExtraRegen.Card, CardType.Card, Guardian.Card, 5); //ExtraRegen Card (Max: 5)
             ClassesRegistry.Register(GuardiansGuardian.Card, CardType.Card, Guardian.Card); //GuardiansGuardian Card (Max: None)
             ClassesRegistry.Register(DoubleHealth.Card, CardType.Card, Guardian.Card); //DoubleHealth Card (Max: None)
-            ClassesRegistry.Register(GuardiansRebirth.Card, CardType.Card, Guardian.Card, 3); //GuardiansRebirth Card (Max: 3)
+            ClassesRegistry.Register(GuardiansRebirth.Card, CardType.Card, Guardian.Card, 2); //GuardiansRebirth Card (Max: 2)
             ClassesRegistry.Register(DamageOver.Card, CardType.Card, Guardian.Card); //DamageOver Card (Max: None)
         }
     }
