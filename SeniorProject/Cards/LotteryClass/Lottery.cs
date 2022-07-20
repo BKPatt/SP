@@ -3,7 +3,6 @@ using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;
 using SeniorProject.MonoBehaviours;
-using SeniorProject;
 
 namespace SeniorProject.Cards.LotteryClass
 {
@@ -24,7 +23,6 @@ namespace SeniorProject.Cards.LotteryClass
             statModifiers.movementSpeed *= 1.35f;
             statModifiers.health *= 0.4f;
             statModifiers.sizeMultiplier *= 0.75f;
-            statModifiers.gravity = 0.65f;
             statModifiers.jump = 3;
 
             cardInfo.allowMultiple = false;
@@ -37,6 +35,8 @@ namespace SeniorProject.Cards.LotteryClass
         }
         public override void OnAddCard(Player player, Gun gun, GunAmmo gunAmmo, CharacterData data, HealthHandler health, Gravity gravity, Block block, CharacterStatModifiers characterStats)
         {
+            gravity.gravityForce *= 2f;
+
             // Mono(s) and adjustments
             player.gameObject.AddComponent<LotteryPointAndCard>();
             player.gameObject.GetComponent<LotteryPointAndCard>().numCards++;
@@ -74,7 +74,7 @@ namespace SeniorProject.Cards.LotteryClass
         }
         protected override CardInfo.Rarity GetRarity()
         {
-            return CardInfo.Rarity.Rare;
+            return CardInfo.Rarity.Common;
         }
         protected override CardInfoStat[] GetStats()
         {
