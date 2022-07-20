@@ -3,7 +3,6 @@ using UnboundLib;
 using UnboundLib.Cards;
 using UnityEngine;
 using SeniorProject.MonoBehaviours;
-using SeniorProject;
 
 namespace SeniorProject.Cards.PinballClass
 {
@@ -92,7 +91,7 @@ namespace SeniorProject.Cards.PinballClass
 
         protected override CardInfo.Rarity GetRarity()
         {
-            return CardInfo.Rarity.Rare;
+            return CardInfo.Rarity.Common;
         }
 
         protected override CardThemeColor.CardThemeColorType GetTheme()
