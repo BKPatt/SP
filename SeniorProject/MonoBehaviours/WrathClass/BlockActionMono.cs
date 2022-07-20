@@ -26,8 +26,6 @@ namespace SeniorProject.MonoBehaviours
         public int numSub = 0; // number of block actions
         public int chanceEx = 10; // 1 in 10 chance to hurt random player
 
-        private bool debug_l = false;
-
         public void Awake()
         {
             // Gets block data
@@ -55,53 +53,11 @@ namespace SeniorProject.MonoBehaviours
 
                 if (health && rand == setHealth)
                 {
-                    //*****************************************************************************
-                    // Debugging
-                    if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                    {
-                        UnityEngine.Debug.Log($"Health: { player.data.maxHealth }");
-                    }
-                    //*****************************************************************************
-
-
-
-                    // Modifiers
                     player.data.maxHealth++;
-
-
-
-                    //*****************************************************************************
-                    // Debugging
-                    if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                    {
-                        UnityEngine.Debug.Log($"Health: { player.data.maxHealth }");
-                    }
-                    //*****************************************************************************
                 }
                 if (lifeS && rand == setLst)
                 {
-                    //*****************************************************************************
-                    // Debugging
-                    if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                    {
-                        UnityEngine.Debug.Log($"Damage: { gun.damage }");
-                    }
-                    //*****************************************************************************
-
-
-
-                    // Modifiers
                     gun.damage += 1;
-
-
-
-                    //*****************************************************************************
-                    // Debugging
-                    if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                    {
-                        UnityEngine.Debug.Log($"Damage: { gun.damage }");
-                    }
-                    //*****************************************************************************
                 }
                 if (blowUpR && rand == setBur)
                 {
@@ -118,48 +74,14 @@ namespace SeniorProject.MonoBehaviours
                             numPlayers++;
                         }
 
-                        //*****************************************************************************
-                        // Debugging
-                        if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                        {
-                            UnityEngine.Debug.Log($"otherPlayers: { otherPlayers }");
-                            UnityEngine.Debug.Log($"Num Players: { numPlayers }");
-                        }
-                        //*****************************************************************************
-
                         randomPlayer = random.Next(numPlayers);
-
-                        //*****************************************************************************
-                        // Debugging
-                        if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                        {
-                            UnityEngine.Debug.Log($"Random Player: { randomPlayer }");
-                        }
-                        //*****************************************************************************
-
-
-
+                        
                         otherPlayers[randomPlayer].data.healthHandler.CallTakeDamage(
                             (Vector2)otherPlayers[randomPlayer].data.healthHandler.transform.position - ((Vector2)((this.transform.position).normalized * (damage * otherPlayers[randomPlayer].data.maxHealth))),
                             (otherPlayers[randomPlayer].data.transform.position),
                             null,
                             otherPlayers[randomPlayer],
                             false);
-
-
-
-                        //*****************************************************************************
-                        // Debugging
-                        if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                        {
-                            UnityEngine.Debug.Log($"HH: { (Vector2)otherPlayers[randomPlayer].data.healthHandler.transform.position }");
-                            UnityEngine.Debug.Log($"Player Health: { otherPlayers[randomPlayer].data.health }");
-                            UnityEngine.Debug.Log($"Damage: { damage }");
-                            UnityEngine.Debug.Log($"Damage Total: { damage * otherPlayers[randomPlayer].data.health }");
-                            UnityEngine.Debug.Log($"Normalized: { ((Vector2)(this.transform.position).normalized) }");
-                            UnityEngine.Debug.Log($"Together: { ((Vector2)(this.transform.position).normalized * (damage * otherPlayers[randomPlayer].data.health)) }");
-                        }
-                        //*****************************************************************************
                     }
                 }
             }
@@ -177,15 +99,6 @@ namespace SeniorProject.MonoBehaviours
                 {
                     numPlayers++;
                 }
-
-                //*****************************************************************************
-                // Debugging
-                if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                {
-                    UnityEngine.Debug.Log($"otherPlayers: { otherPlayers }");
-                    UnityEngine.Debug.Log($"numPlayers: { numPlayers }");
-                }
-                //*****************************************************************************
 
                 this.gameObject.GetComponent<PhotonView>().RPC("RPCA_Random", RpcTarget.All, new object[]
                 {
@@ -213,77 +126,17 @@ namespace SeniorProject.MonoBehaviours
         [PunRPC]
         private void RPCA_Random(int srand1, int srand2, int srand3)
         {
-            //*****************************************************************************
-            // Debugging
-            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-            {
-                UnityEngine.Debug.Log($"Run RPCA_Random");
-            }
-            //*****************************************************************************
-
             rand = srand1;
             rand1 = srand2;
             randomPlayer = srand3;
 
-            //*****************************************************************************
-            // Debugging
-            if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-            {
-                UnityEngine.Debug.Log($"rand: { rand }");
-                UnityEngine.Debug.Log($"rand1: { rand1 }");
-                UnityEngine.Debug.Log($"randomPlayer: { randomPlayer }");
-            }
-            //*****************************************************************************
-
             if (health && srand1 == setHealth)
             {
-                //*****************************************************************************
-                // Debugging
-                if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                {
-                    UnityEngine.Debug.Log($"Health: { player.data.maxHealth }");
-                }
-                //*****************************************************************************
-
-
-
-                // Modifiers
                 player.data.maxHealth++;
-
-
-
-                //*****************************************************************************
-                // Debugging
-                if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                {
-                    UnityEngine.Debug.Log($"Health: { player.data.maxHealth }");
-                }
-                //*****************************************************************************
             }
             if (lifeS && srand1 == setLst)
             {
-                //*****************************************************************************
-                // Debugging
-                if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                {
-                    UnityEngine.Debug.Log($"Damage: { gun.damage }");
-                }
-                //*****************************************************************************
-
-
-
-                // Modifiers
                 gun.damage += 1;
-
-
-
-                //*****************************************************************************
-                // Debugging
-                if (debug_l || SeniorProject.debug_am || SeniorProject.debug_a)
-                {
-                    UnityEngine.Debug.Log($"Damage: { gun.damage }");
-                }
-                //*****************************************************************************
             }
         }
 
