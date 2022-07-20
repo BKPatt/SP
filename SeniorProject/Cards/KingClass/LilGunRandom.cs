@@ -5,7 +5,6 @@ using UnboundLib.Cards;
 using UnityEngine;
 using SeniorProject.MonoBehaviours;
 using System.Linq;
-using SeniorProject;
 
 namespace SeniorProject.Cards.KingClass
 {
