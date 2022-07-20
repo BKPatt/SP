@@ -1,6 +1,5 @@
 using ClassesManagerReborn;
 using System.Collections;
-using SeniorProject;
 
 namespace SeniorProject.Cards.LotteryClass
 {
