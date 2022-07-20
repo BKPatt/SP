@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using System;
 using UnboundLib;
 using SeniorProject.Extensions;
@@ -28,7 +28,7 @@ namespace SeniorProject.MonoBehaviours
             {
                 Player hitPlayer = healthHandler.GetComponent<Player>();
                 // if the hit player is not null
-                if (hitPlayer != null && __instance.ownPlayer.teamID == hitPlayer.teamID && __instance.ownPlayer.data.stats.GetAdditionalData().JokesOnYou)
+                if (hitPlayer != null && __instance.ownPlayer.teamID == hitPlayer.teamID && __instance.ownPlayer.data.stats.GetAdditionalData().RemoveSelfDamage)
                 {
                     __instance.GetComponent<ProjectileHit>().RemoveOwnPlayerFromPlayersHit();
                     __instance.GetComponent<ProjectileHit>().AddPlayerToHeld(healthHandler);
