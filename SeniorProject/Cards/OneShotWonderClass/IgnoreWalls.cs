@@ -3,7 +3,6 @@ using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;
 using SeniorProject.MonoBehaviours;
-using SeniorProject;
 
 namespace SeniorProject.Cards.OneShotWonderClass
 {
@@ -93,3 +92,4 @@ namespace SeniorProject.Cards.OneShotWonderClass
         }
     }
 }
+
