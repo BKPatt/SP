@@ -3,7 +3,6 @@ using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;
 using SeniorProject.MonoBehaviours;
-using SeniorProject;
 
 namespace SeniorProject.Cards.LotteryClass
 {
@@ -60,7 +59,7 @@ namespace SeniorProject.Cards.LotteryClass
         }
         protected override string GetDescription()
         {
-            return "The chance to blow up now applies to everyone else every 60 seconds.";
+            return "The chance to blow up now applies to everyone else every 30 seconds.";
         }
         protected override GameObject GetCardArt()
         {
@@ -68,7 +67,7 @@ namespace SeniorProject.Cards.LotteryClass
         }
         protected override CardInfo.Rarity GetRarity()
         {
-            return CardInfo.Rarity.Rare;
+            return CardInfo.Rarity.Common;
         }
         protected override CardInfoStat[] GetStats()
         {
