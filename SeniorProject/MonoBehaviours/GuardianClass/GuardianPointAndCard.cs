@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnboundLib.GameModes;
 using System.Collections;
 
@@ -71,7 +71,7 @@ namespace SeniorProject.MonoBehaviours
 
                 if (player.data.maxHealth > 1000)
                 {
-                    player.data.stats.sizeMultiplier = 0.9f;
+                    player.data.stats.sizeMultiplier = 0.95f;
                 }
 
                 store_point = point + 1;
@@ -94,8 +94,8 @@ namespace SeniorProject.MonoBehaviours
             // Max Health
             if (addHealth > store_health)
             {
-                player.data.maxHealth = 2;
-                player.data.stats.sizeMultiplier = 0.5f;
+                player.data.maxHealth *= 2;
+                player.data.stats.sizeMultiplier = 0.95f;
                 store_health = addHealth;
             }
             // Respawns

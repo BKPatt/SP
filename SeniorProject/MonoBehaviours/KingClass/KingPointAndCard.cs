@@ -1,13 +1,8 @@
-using System;
+﻿using System;
 using ModdingUtils.MonoBehaviours;
 using UnboundLib.GameModes;
 using System.Collections;
 using Photon.Pun;
-
-//*****************************************************************************
-// Test Reversible Effect for King class (works a bit differently from other one
-// Not currently implemented
-//*****************************************************************************
 
 namespace SeniorProject.MonoBehaviours
 {
@@ -24,7 +19,7 @@ namespace SeniorProject.MonoBehaviours
         public bool enableDamageOver = false;
         public bool enableAtSpeed = false;
         public bool enableBounce = false;
-        public bool enableProj = false;
+        //public bool enableProj = false;
         public bool enableAmmo = false;
         public bool enableDamage = false;
         public bool enableKnockback = false;
@@ -39,7 +34,7 @@ namespace SeniorProject.MonoBehaviours
         private int rand6; //seconds to take damage over
         private double rand7; //attack speed
         private int rand8; //bounces
-        private int rand11; //number of projectiles
+        //private int rand11; //number of projectiles
         private int rand12; //amount of ammo
         private int rand13; //damage
         private double rand13_1;
@@ -55,7 +50,7 @@ namespace SeniorProject.MonoBehaviours
         public int sDamageOver = 1;
         public double aSpeed = 1.0f;
         public int bounce = 5;
-        public int numProj = 5;
+        //public int numProj = 5;
         public int ammo = 5;
         public int damage = 2;
         public int knockback = 2;
@@ -97,7 +92,7 @@ namespace SeniorProject.MonoBehaviours
         public override void OnAwake()
         {
             // Sets listener for when battle begins and ends
-            GameModeManager.AddHook(GameModeHooks.HookPointStart, OnPointStart);
+            GameModeManager.AddHook(GameModeHooks.HookBattleStart, OnPointStart);
             GameModeManager.AddHook(GameModeHooks.HookPointEnd, OnPointEnd);
         }
 
@@ -128,7 +123,7 @@ namespace SeniorProject.MonoBehaviours
                     rand6, //seconds to take damage over
                     rand7, //attack speed
                     rand8, //bounces
-                    rand11, //number of projectiles
+                    //rand11, //number of projectiles
                     rand12, //amount of ammo
                     rand13, //damage
                     rand13_1, //floating point damage
@@ -140,7 +135,7 @@ namespace SeniorProject.MonoBehaviours
         }
 
         [PunRPC]
-        private void RPCA_RandomStats(int srand1, double srand2, int srand3, int srand4, int srand5, int srand6, double srand7, int srand8, int srand11, int srand12, int srand13, double srand13_1, int srand14, double srand15, int srand16)
+        private void RPCA_RandomStats(int srand1, double srand2, int srand3, int srand4, int srand5, int srand6, double srand7, int srand8, /*int srand11,*/ int srand12, int srand13, double srand13_1, int srand14, double srand15, int srand16)
         {
             // Sets it to global variable so that local play and network play don't repeat setStats code
             rand1 = srand1;
@@ -151,7 +146,7 @@ namespace SeniorProject.MonoBehaviours
             rand6 = srand6;
             rand7 = srand7;
             rand8 = srand8;
-            rand11 = srand11;
+            //rand11 = srand11;
             rand12 = srand12;
             rand13 = srand13;
             rand13_1 = srand13_1;
@@ -175,7 +170,7 @@ namespace SeniorProject.MonoBehaviours
             rand6 = random.Next(sDamageOver); //seconds to take damage over
             rand7 = random.NextDouble(); //attack speed
             rand8 = random.Next(bounce); //bounces
-            rand11 = random.Next(numProj); //number of projectiles
+            //rand11 = random.Next(numProj); //number of projectiles
             rand12 = random.Next(ammo); //amount of ammo
             rand13 = random.Next(damage + ((point + numCards) / 2)); //damage
             rand14 = random.Next(knockback); //knockback
@@ -221,14 +216,14 @@ namespace SeniorProject.MonoBehaviours
                 gunStatModifier.reflects_add += rand8;
             }
             // Number of Projectiles
-            if (enableProj)
+            /*if (enableProj)
             {
                 gunStatModifier.numberOfProjectiles_add += rand11;
-            }
+            }*/
             // Ammo
             if (enableAmmo)
             {
-                gunAmmoStatModifier.currentAmmo_add += rand12;
+                gunAmmoStatModifier.maxAmmo_add += rand12;
             }
             // Damage
             if (enableDamage)

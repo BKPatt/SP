@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using ModdingUtils.Utils;
@@ -17,6 +17,7 @@ namespace SeniorProject.MonoBehaviours
         private int rand; // which block action to run if enabled
         private int rand1; //odds to hurt random player
         private int randomPlayer; //which player to hurt
+        private int randDamage; //if double damage
 
         // Block actions (LS changed to damage)
         public bool health = false;
@@ -25,6 +26,7 @@ namespace SeniorProject.MonoBehaviours
         
         public int numSub = 0; // number of block actions
         public int chanceEx = 10; // 1 in 10 chance to hurt random player
+        public int dmg = 50; // 1 in 50 chance to double damage
 
         public void Awake()
         {
@@ -50,12 +52,13 @@ namespace SeniorProject.MonoBehaviours
             { 
                 // rand based on number of block actions enabled
                 rand = random.Next(numSub);
+                randDamage = random.Next(dmg);
 
                 if (health && rand == setHealth)
                 {
                     player.data.maxHealth++;
                 }
-                if (lifeS && rand == setLst)
+                if (lifeS && rand == setLst && randDamage == 0)
                 {
                     gun.damage += 1;
                 }

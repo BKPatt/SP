@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnboundLib.GameModes;
 using System.Collections;
 
@@ -76,6 +76,13 @@ namespace SeniorProject.MonoBehaviours
                 store_numCards = numCards + 1;
             }
 
+
+            // Makes sure reload time isn't explicitly set below 4s
+            if (gunAmmo.reloadTime < 4)
+            {
+                gunAmmo.reloadTime = 4;
+            }
+
             yield break;
         }
 
@@ -115,12 +122,6 @@ namespace SeniorProject.MonoBehaviours
             if (bullet_grav)
             {
                 gun.gravity = 0;
-            }
-
-            // Makes sure reload time isn't explicitly set below 4s
-            if (gun.reloadTime < 4)
-            {
-                gun.reloadTime = 4;
             }
         }
     }
