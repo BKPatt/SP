@@ -1,4 +1,4 @@
-using UnboundLib;
+﻿using UnboundLib;
 using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;
@@ -77,7 +77,7 @@ namespace SeniorProject.Cards.LotteryClass
                 {
                     positive = true,
                     stat = "Blow up odds",
-                    amount = "+400%",
+                    amount = "+300%",
                     simepleAmount = CardInfoStat.SimpleAmount.notAssigned
                 }
             };

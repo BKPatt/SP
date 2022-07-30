@@ -1,4 +1,4 @@
-using ClassesManagerReborn;
+﻿using ClassesManagerReborn;
 using System.Collections;
 
 namespace SeniorProject.Cards.GuardianClass

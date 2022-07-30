@@ -1,16 +1,19 @@
-using ClassesManagerReborn.Util;
+﻿using ClassesManagerReborn.Util;
 using System.Collections.Generic;
 using UnboundLib;
 using UnboundLib.Cards;
 using UnityEngine;
 using SeniorProject.MonoBehaviours;
 using System.Linq;
+using System;
 
 namespace SeniorProject.Cards.KingClass
 {
     class LilGunRandom : CustomCard
     {
         public static CardInfo Card = null;
+
+        private System.Random rand = new System.Random();
 
         private bool debug_l = false;
 
@@ -44,9 +47,11 @@ namespace SeniorProject.Cards.KingClass
 
             // Mono(s) and adjustments
             player.gameObject.GetComponent<KingPointAndCard>().numCards++;
+
+            gun.numberOfProjectiles *= rand.Next(2);
+
+            //player.gameObject.GetComponent<KingPointAndCard>().enableProj = true;
             player.gameObject.GetComponent<KingPointAndCard>().enableBounce = true;
-            player.gameObject.GetComponent<KingPointAndCard>().enableProj = true;
-            player.gameObject.GetComponent<KingPointAndCard>().enableAmmo = true;
 
             // Debugging
             if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
@@ -59,9 +64,8 @@ namespace SeniorProject.Cards.KingClass
         {
             // Remove Mono(s) and adjustments
             gameObject.GetComponent<KingPointAndCard>().numCards--;
+            //gameObject.GetComponent<KingPointAndCard>().enableProj = false;
             gameObject.GetComponent<KingPointAndCard>().enableBounce = false;
-            gameObject.GetComponent<KingPointAndCard>().enableProj = false;
-            gameObject.GetComponent<KingPointAndCard>().enableAmmo = false;
 
             // Debugging
             if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
@@ -94,8 +98,8 @@ namespace SeniorProject.Cards.KingClass
                 new CardInfoStat()
                 {
                     positive = true,
-                    stat = "Number of Projectiles",
-                    amount = "1-X",
+                    stat = "Projectile Size",
+                    amount = "*0-2",
                     simepleAmount = CardInfoStat.SimpleAmount.notAssigned
                 },
             };

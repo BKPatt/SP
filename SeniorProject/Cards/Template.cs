@@ -1,4 +1,4 @@
-using UnboundLib.Cards;
+﻿using UnboundLib.Cards;
 using UnityEngine;
 
 namespace SeniorProject.Cards

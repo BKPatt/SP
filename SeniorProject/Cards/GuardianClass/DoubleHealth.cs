@@ -1,4 +1,4 @@
-using ClassesManagerReborn.Util;
+﻿using ClassesManagerReborn.Util;
 using UnboundLib;
 using UnboundLib.Cards;
 using UnityEngine;
@@ -78,7 +78,7 @@ namespace SeniorProject.Cards.GuardianClass
                 {
                     positive = true,
                     stat = "Health",
-                    amount = "+200%",
+                    amount = "+100%",
                     simepleAmount = CardInfoStat.SimpleAmount.notAssigned
                 },
                 new CardInfoStat()

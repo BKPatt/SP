@@ -1,4 +1,4 @@
-using ClassesManagerReborn.Util;
+﻿using ClassesManagerReborn.Util;
 using UnboundLib;
 using UnboundLib.Cards;
 using UnityEngine;
@@ -84,14 +84,14 @@ namespace SeniorProject.Cards.KingClass
                 {
                     positive = true,
                     stat = "Movement Speed",
-                    amount = "0->X+2",
+                    amount = "0-X+2",
                     simepleAmount = CardInfoStat.SimpleAmount.notAssigned
                 },
                 new CardInfoStat()
                 {
                     positive = true,
                     stat = "Gravity",
-                    amount = "0->X-0.5",
+                    amount = "0-(X-0.5)",
                     simepleAmount = CardInfoStat.SimpleAmount.notAssigned
                 },
             };

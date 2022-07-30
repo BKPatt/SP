@@ -1,4 +1,4 @@
-using UnboundLib;
+﻿using UnboundLib;
 using UnboundLib.Cards;
 using UnityEngine;
 using ClassesManagerReborn.Util;

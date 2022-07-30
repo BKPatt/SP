@@ -1,4 +1,4 @@
-using ClassesManagerReborn.Util;
+﻿using ClassesManagerReborn.Util;
 using UnboundLib;
 using UnboundLib.Cards;
 using UnityEngine;
@@ -84,8 +84,8 @@ namespace SeniorProject.Cards.KingClass
                 new CardInfoStat()
                 {
                     positive = true,
-                    stat = "Damage",
-                    amount = "1-X(Y+1)",
+                    stat = "Damage Multiplier",
+                    amount = "1-X+1",
                     simepleAmount = CardInfoStat.SimpleAmount.notAssigned
                 },
                 new CardInfoStat()

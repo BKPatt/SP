@@ -1,4 +1,4 @@
-using ClassesManagerReborn.Util;
+﻿using ClassesManagerReborn.Util;
 using UnboundLib;
 using UnboundLib.Cards;
 using UnityEngine;
@@ -34,7 +34,7 @@ namespace SeniorProject.Cards.KingClass
         {
             // Mono(s) and adjustments
             player.gameObject.GetComponent<KingPointAndCard>().numCards++;
-            player.gameObject.GetComponent<KingPointAndCard>().numProj += 2;
+            //player.gameObject.GetComponent<KingPointAndCard>().numProj += 2;
             player.gameObject.GetComponent<KingPointAndCard>().ammo += 2;
 
             if (player.gameObject.GetComponent<KingPointAndCard>().reloadTime > 0)
@@ -53,7 +53,7 @@ namespace SeniorProject.Cards.KingClass
         {
             // Remove Mono(s) and adjustments
             gameObject.GetComponent<KingPointAndCard>().numCards--;
-            gameObject.GetComponent<KingPointAndCard>().numProj -= 2;
+            //gameObject.GetComponent<KingPointAndCard>().numProj -= 2;
             gameObject.GetComponent<KingPointAndCard>().ammo -= 2;
             gameObject.GetComponent<KingPointAndCard>().reloadTime += 1;
 

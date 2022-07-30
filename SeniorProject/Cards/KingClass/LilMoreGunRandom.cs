@@ -1,14 +1,17 @@
-using ClassesManagerReborn.Util;
+﻿using ClassesManagerReborn.Util;
 using UnboundLib;
 using UnboundLib.Cards;
 using UnityEngine;
 using SeniorProject.MonoBehaviours;
+using System;
 
 namespace SeniorProject.Cards.KingClass
 {
     class LilMoreGunRandom : CustomCard
     {
         public static CardInfo Card = null;
+
+        private System.Random rand = new System.Random();
 
         private bool debug_l = false;
 
@@ -34,8 +37,10 @@ namespace SeniorProject.Cards.KingClass
         {
             // Mono(s) and adjustments
             player.gameObject.GetComponent<KingPointAndCard>().numCards++;
-            player.gameObject.GetComponent<KingPointAndCard>().enableBounce = true;
-            player.gameObject.GetComponent<KingPointAndCard>().enableProj = true;
+            player.gameObject.GetComponent<KingPointAndCard>().enableKnockback = true;
+            player.gameObject.GetComponent<KingPointAndCard>().enableAmmo = true;
+
+            gun.numberOfProjectiles += rand.Next(3);
 
             // Debugging
             if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
@@ -48,8 +53,8 @@ namespace SeniorProject.Cards.KingClass
         {
             // Removes Mono(s) and adjustments
             gameObject.GetComponent<KingPointAndCard>().numCards--;
-            gameObject.GetComponent<KingPointAndCard>().enableBounce = false;
-            gameObject.GetComponent<KingPointAndCard>().enableProj = false;
+            gameObject.GetComponent<KingPointAndCard>().enableKnockback = false;
+            gameObject.GetComponent<KingPointAndCard>().enableAmmo = false;
 
             // Debugging
             if (debug_l || SeniorProject.debug_g || SeniorProject.debug_a)
@@ -75,15 +80,15 @@ namespace SeniorProject.Cards.KingClass
                 new CardInfoStat()
                 {
                     positive = true,
-                    stat = "Ammo",
+                    stat = "Knockback",
                     amount = "X-X",
                     simepleAmount = CardInfoStat.SimpleAmount.notAssigned
                 },
                 new CardInfoStat()
                 {
                     positive = true,
-                    stat = "Knockback",
-                    amount = "1-X",
+                    stat = "Max Ammo",
+                    amount = "X-X",
                     simepleAmount = CardInfoStat.SimpleAmount.notAssigned
                 }
             };
